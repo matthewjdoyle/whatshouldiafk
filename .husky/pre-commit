@@ -1,0 +1,2 @@
+node scripts/generate-previews.mjs
+git add previews.png

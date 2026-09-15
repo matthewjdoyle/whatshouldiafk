@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --color-app: var(--theme-bg-app);
+  --color-surface: var(--theme-bg-surface);
+  --color-surface-hover: var(--theme-bg-surface-hover);
+  --color-input: var(--theme-bg-input);
+  
+  --color-main: var(--theme-text-main);
+  --color-sub: var(--theme-text-sub);
+  --color-muted: var(--theme-text-muted);
+  
+  --color-accent: var(--theme-accent);
+  --color-accent-hover: var(--theme-accent-hover);
+  
+  --color-border-main: var(--theme-border-main);
+  --color-border-sub: var(--theme-border-sub);
+
+  --color-profit: var(--theme-profit);
+  --color-loss: var(--theme-loss);
+  --color-profit-dim: var(--theme-profit-dim);
+  --color-loss-dim: var(--theme-loss-dim);
+}
+
+:root {
+  /* Default dark mode - very dark with blue accent */
+  --theme-bg-app: #000000; /* true black */
+  --theme-bg-surface: #020617; /* slate-950 */
+  --theme-bg-surface-hover: #0f172a; /* slate-900 */
+  --theme-bg-input: #000000; /* true black */
+  
+  --theme-text-main: #f8fafc; /* slate-50 */
+  --theme-text-sub: #e2e8f0; /* slate-200 */
+  --theme-text-muted: #94a3b8; /* slate-400 */
+  
+  --theme-accent: #60a5fa; /* blue-400 */
+  --theme-accent-hover: #93c5fd; /* blue-300 */
+  
+  --theme-border-main: #1e293b; /* slate-800 */
+  --theme-border-sub: #0f172a; /* slate-900 */
+
+  --theme-profit: #4ade80; /* green-400 */
+  --theme-loss: #f87171; /* red-400 */
+  --theme-profit-dim: #86efac; /* green-300 */
+  --theme-loss-dim: #fca5a5; /* red-300 */
+}
+
+[data-theme="light"] {
+  /* Light mode - white with blue accent */
+  --theme-bg-app: #f8fafc; /* slate-50 */
+  --theme-bg-surface: #ffffff; /* white */
+  --theme-bg-surface-hover: #f1f5f9; /* slate-100 */
+  --theme-bg-input: #ffffff; /* white */
+  
+  --theme-text-main: #0f172a; /* slate-900 */
+  --theme-text-sub: #334155; /* slate-700 */
+  --theme-text-muted: #64748b; /* slate-500 */
+  
+  --theme-accent: #1d4ed8; /* blue-700 */
+  --theme-accent-hover: #2563eb; /* blue-600 */
+  
+  --theme-border-main: #cbd5e1; /* slate-300 */
+  --theme-border-sub: #e2e8f0; /* slate-200 */
+
+  --theme-profit: #16a34a; /* green-600 */
+  --theme-loss: #dc2626; /* red-600 */
+  --theme-profit-dim: #22c55e; /* green-500 */
+  --theme-loss-dim: #ef4444; /* red-500 */
+}
+
+[data-theme="rsmode"] {
+  /* RS Mode - oldschool browns and yellow */
+  --theme-bg-app: #2b251e; /* dark brown */
+  --theme-bg-surface: #3e3529; /* lighter brown */
+  --theme-bg-surface-hover: #4e4334;
+  --theme-bg-input: #211c16;
+  
+  --theme-text-main: #f3e5ab; /* oldschool yellow-ish */
+  --theme-text-sub: #d3c494; /* muted yellow */
+  --theme-text-muted: #9f9167; 
+  
+  --theme-accent: #facc15; /* yellow-400 */
+  --theme-accent-hover: #fde047; /* yellow-300 */
+  
+  --theme-border-main: #5c4f3d; 
+  --theme-border-sub: #463b2c;
+
+  --theme-profit: #4ade80; /* green-400 */
+  --theme-loss: #f87171; /* red-400 */
+  --theme-profit-dim: #86efac; /* green-300 */
+  --theme-loss-dim: #fca5a5; /* red-300 */
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: flex-start;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--theme-bg-app);
+  color: var(--theme-text-main);
+}
+.custom-scrollbar::-webkit-scrollbar { width: 6px; } .custom-scrollbar::-webkit-scrollbar-track { background: transparent; } .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--theme-border-main); border-radius: 3px; } .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--theme-text-muted); }

@@ -1,0 +1,1581 @@
+[
+  {
+    "id": "cannonballs",
+    "name": "Cannonballs (Standard)",
+    "skill": "Smithing",
+    "level": 35,
+    "afk": {
+      "typicalSeconds": 160,
+      "interactionsPerHour": 22,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 13824
+    },
+    "inputs": [
+      {
+        "name": "Steel bar",
+        "id": 2353,
+        "amountPerHour": 540
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Steel cannonball",
+        "id": 2,
+        "amountPerHour": 2160
+      }
+    ],
+    "requirements": [
+      "Dwarf Cannon"
+    ]
+  },
+  {
+    "id": "cannonballs-double",
+    "name": "Cannonballs (Double Ammo)",
+    "skill": "Smithing",
+    "level": 35,
+    "afk": {
+      "typicalSeconds": 80,
+      "interactionsPerHour": 44,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 27648
+    },
+    "inputs": [
+      {
+        "name": "Steel bar",
+        "id": 2353,
+        "amountPerHour": 1080
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Steel cannonball",
+        "id": 2,
+        "amountPerHour": 4320
+      }
+    ],
+    "requirements": [
+      "Dwarf Cannon",
+      "Sleeping Giants"
+    ]
+  },
+  {
+    "id": "mithril-dart-tips",
+    "name": "Mithril dart tips",
+    "skill": "Smithing",
+    "level": 54,
+    "afk": {
+      "typicalSeconds": 81,
+      "interactionsPerHour": 44,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 53000
+    },
+    "inputs": [
+      {
+        "name": "Mithril bar",
+        "id": 2359,
+        "amountPerHour": 1060
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Mithril dart tip",
+        "id": 822,
+        "amountPerHour": 10600
+      }
+    ],
+    "requirements": [
+      "The Tourist Trap"
+    ]
+  },
+  {
+    "id": "adamant-dart-tips",
+    "name": "Adamant dart tips",
+    "skill": "Smithing",
+    "level": 74,
+    "afk": {
+      "typicalSeconds": 81,
+      "interactionsPerHour": 44,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 66250
+    },
+    "inputs": [
+      {
+        "name": "Adamantite bar",
+        "id": 2361,
+        "amountPerHour": 1060
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Adamant dart tip",
+        "id": 823,
+        "amountPerHour": 10600
+      }
+    ],
+    "requirements": [
+      "The Tourist Trap"
+    ]
+  },
+  {
+    "id": "rune-dart-tips",
+    "name": "Rune dart tips",
+    "skill": "Smithing",
+    "level": 89,
+    "afk": {
+      "typicalSeconds": 81,
+      "interactionsPerHour": 44,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 79500
+    },
+    "inputs": [
+      {
+        "name": "Runite bar",
+        "id": 2363,
+        "amountPerHour": 1060
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Rune dart tip",
+        "id": 824,
+        "amountPerHour": 10600
+      }
+    ],
+    "requirements": [
+      "The Tourist Trap"
+    ]
+  },
+  {
+    "id": "karambwans",
+    "name": "Karambwans",
+    "skill": "Fishing",
+    "level": 65,
+    "afk": {
+      "typicalSeconds": 253,
+      "interactionsPerHour": 14,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 40000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Raw karambwan",
+        "id": 3142,
+        "amountPerHour": 800
+      }
+    ],
+    "requirements": [
+      "Tai Bwo Wannai Trio",
+      "Fish barrel"
+    ]
+  },
+  {
+    "id": "dark-crabs",
+    "name": "Dark crabs",
+    "skill": "Fishing",
+    "level": 85,
+    "afk": {
+      "typicalSeconds": 300,
+      "interactionsPerHour": 12,
+      "bankingComplexity": "High"
+    },
+    "xp": {
+      "perHour": 45500
+    },
+    "inputs": [
+      {
+        "name": "Dark fishing bait",
+        "id": 11940,
+        "amountPerHour": 350
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Raw dark crab",
+        "id": 11934,
+        "amountPerHour": 350
+      }
+    ],
+    "requirements": [
+      "Wilderness Elite Diary (recommended)",
+      "Fish barrel"
+    ]
+  },
+  {
+    "id": "anglerfish",
+    "name": "Anglerfish",
+    "skill": "Fishing",
+    "level": 82,
+    "afk": {
+      "typicalSeconds": 157,
+      "interactionsPerHour": 23,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 18000
+    },
+    "inputs": [
+      {
+        "name": "Sandworms",
+        "id": 13431,
+        "amountPerHour": 150
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Raw anglerfish",
+        "id": 13439,
+        "amountPerHour": 150
+      }
+    ],
+    "requirements": [
+      "100% Piscarilius favour"
+    ]
+  },
+  {
+    "id": "sacred-eels",
+    "name": "Sacred eels",
+    "skill": "Fishing",
+    "level": 87,
+    "afk": {
+      "typicalSeconds": 60,
+      "interactionsPerHour": 60,
+      "bankingComplexity": "None"
+    },
+    "xp": {
+      "perHour": 20000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Zulrah's scales",
+        "id": 12934,
+        "amountPerHour": 1500
+      }
+    ],
+    "requirements": [
+      "Regicide",
+      "Cooking 72"
+    ]
+  },
+  {
+    "id": "infernal-eels",
+    "name": "Infernal eels",
+    "skill": "Fishing",
+    "level": 80,
+    "afk": {
+      "typicalSeconds": 70,
+      "interactionsPerHour": 50,
+      "bankingComplexity": "None"
+    },
+    "xp": {
+      "perHour": 30000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Onyx bolt tips",
+        "id": 9194,
+        "amountPerHour": 22
+      },
+      {
+        "name": "Lava scale shard",
+        "id": 11994,
+        "amountPerHour": 300
+      },
+      {
+        "name": "Tokkul",
+        "id": 6529,
+        "amountPerHour": 4000
+      }
+    ],
+    "requirements": [
+      "Fire Cape",
+      "Oily rod"
+    ]
+  },
+  {
+    "id": "cave-eels",
+    "name": "Cave eels",
+    "skill": "Fishing",
+    "level": 38,
+    "afk": {
+      "typicalSeconds": 120,
+      "interactionsPerHour": 30,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 20000
+    },
+    "inputs": [
+      {
+        "name": "Fishing bait",
+        "id": 313,
+        "amountPerHour": 300
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Raw cave eel",
+        "id": 5001,
+        "amountPerHour": 300
+      }
+    ],
+    "requirements": [
+      "Tears of Guthix",
+      "Fish barrel"
+    ]
+  },
+  {
+    "id": "monkfish",
+    "name": "Monkfish",
+    "skill": "Fishing",
+    "level": 62,
+    "afk": {
+      "typicalSeconds": 90,
+      "interactionsPerHour": 40,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 35000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Raw monkfish",
+        "id": 7944,
+        "amountPerHour": 290
+      }
+    ],
+    "requirements": [
+      "Swan Song"
+    ]
+  },
+  {
+    "id": "amethyst",
+    "name": "Amethyst",
+    "skill": "Mining",
+    "level": 92,
+    "afk": {
+      "typicalSeconds": 80,
+      "interactionsPerHour": 45,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 22000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Amethyst",
+        "id": 21347,
+        "amountPerHour": 91
+      }
+    ],
+    "requirements": [
+      "Mining guild access"
+    ]
+  },
+  {
+    "id": "shooting-stars",
+    "name": "Shooting Stars",
+    "skill": "Mining",
+    "level": 10,
+    "afk": {
+      "typicalSeconds": 420,
+      "interactionsPerHour": 9,
+      "bankingComplexity": "None"
+    },
+    "xp": {
+      "perHour": 25000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Stardust",
+        "id": 25527,
+        "amountPerHour": 800
+      }
+    ],
+    "requirements": []
+  },
+  {
+    "id": "redwoods",
+    "name": "Redwoods",
+    "skill": "Woodcutting",
+    "level": 90,
+    "afk": {
+      "typicalSeconds": 260,
+      "interactionsPerHour": 14,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 65000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Redwood logs",
+        "id": 19669,
+        "amountPerHour": 170
+      }
+    ],
+    "requirements": [
+      "Woodcutting Guild"
+    ]
+  },
+  {
+    "id": "magic-trees",
+    "name": "Magic trees",
+    "skill": "Woodcutting",
+    "level": 75,
+    "afk": {
+      "typicalSeconds": 200,
+      "interactionsPerHour": 18,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 30000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Magic logs",
+        "id": 1513,
+        "amountPerHour": 120
+      }
+    ],
+    "requirements": []
+  },
+  {
+    "id": "yew-trees",
+    "name": "Yew trees",
+    "skill": "Woodcutting",
+    "level": 60,
+    "afk": {
+      "typicalSeconds": 150,
+      "interactionsPerHour": 24,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 40000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Yew logs",
+        "id": 1515,
+        "amountPerHour": 220
+      }
+    ],
+    "requirements": []
+  },
+  {
+    "id": "plank-make-mahogany",
+    "name": "Plank Make (Mahogany)",
+    "skill": "Magic",
+    "level": 86,
+    "afk": {
+      "typicalSeconds": 90,
+      "interactionsPerHour": 40,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 90000
+    },
+    "inputs": [
+      {
+        "name": "Mahogany logs",
+        "id": 6332,
+        "amountPerHour": 1000
+      },
+      {
+        "name": "Nature rune",
+        "id": 561,
+        "amountPerHour": 1000
+      },
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 2000
+      },
+      {
+        "name": "Coins",
+        "id": 995,
+        "amountPerHour": 1050000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Mahogany plank",
+        "id": 8782,
+        "amountPerHour": 1000
+      }
+    ],
+    "requirements": [
+      "Lunar Diplomacy",
+      "Dream Mentor"
+    ]
+  },
+  {
+    "id": "string-jewellery-gold",
+    "name": "String Jewellery (Gold amulets)",
+    "skill": "Magic",
+    "level": 80,
+    "afk": {
+      "typicalSeconds": 50,
+      "interactionsPerHour": 72,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 130000
+    },
+    "inputs": [
+      {
+        "name": "Gold amulet (u)",
+        "id": 1673,
+        "amountPerHour": 1560
+      },
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 3120
+      },
+      {
+        "name": "Water rune",
+        "id": 555,
+        "amountPerHour": 7800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Gold amulet",
+        "id": 1692,
+        "amountPerHour": 1560
+      }
+    ],
+    "requirements": [
+      "Lunar Diplomacy"
+    ]
+  },
+  {
+    "id": "glassblowing-unpowered-orbs",
+    "name": "Glassblowing (Unpowered orbs)",
+    "skill": "Crafting",
+    "level": 46,
+    "afk": {
+      "typicalSeconds": 48,
+      "interactionsPerHour": 75,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 90000
+    },
+    "inputs": [
+      {
+        "name": "Molten glass",
+        "id": 1775,
+        "amountPerHour": 1700
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Unpowered orb",
+        "id": 567,
+        "amountPerHour": 1700
+      }
+    ],
+    "requirements": [
+      "Glassblowing pipe"
+    ]
+  },
+  {
+    "id": "cooking-sharks",
+    "name": "Cooking Sharks",
+    "skill": "Cooking",
+    "level": 80,
+    "afk": {
+      "typicalSeconds": 68,
+      "interactionsPerHour": 53,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 250000
+    },
+    "inputs": [
+      {
+        "name": "Raw shark",
+        "id": 383,
+        "amountPerHour": 1300
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Shark",
+        "id": 385,
+        "amountPerHour": 1300
+      }
+    ],
+    "requirements": [
+      "Cooking gauntlets (recommended)"
+    ]
+  },
+  {
+    "id": "cooking-karambwans",
+    "name": "Cooking Karambwans",
+    "skill": "Cooking",
+    "level": 30,
+    "afk": {
+      "typicalSeconds": 68,
+      "interactionsPerHour": 53,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 247000
+    },
+    "inputs": [
+      {
+        "name": "Raw karambwan",
+        "id": 3142,
+        "amountPerHour": 1300
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Cooked karambwan",
+        "id": 3144,
+        "amountPerHour": 1300
+      }
+    ],
+    "requirements": [
+      "Tai Bwo Wannai Trio"
+    ]
+  },
+  {
+    "id": "cooking-manta-rays",
+    "name": "Cooking Manta Rays",
+    "skill": "Cooking",
+    "level": 91,
+    "afk": {
+      "typicalSeconds": 68,
+      "interactionsPerHour": 53,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 281000
+    },
+    "inputs": [
+      {
+        "name": "Raw manta ray",
+        "id": 389,
+        "amountPerHour": 1300
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Manta ray",
+        "id": 391,
+        "amountPerHour": 1300
+      }
+    ],
+    "requirements": [
+      "Cooking gauntlets (recommended)"
+    ]
+  },
+  {
+    "id": "magic-longbow-u",
+    "name": "Cutting Magic Longbows",
+    "skill": "Fletching",
+    "level": 85,
+    "afk": {
+      "typicalSeconds": 50,
+      "interactionsPerHour": 72,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 135000
+    },
+    "inputs": [
+      {
+        "name": "Magic logs",
+        "id": 1513,
+        "amountPerHour": 1475
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Magic longbow (u)",
+        "id": 70,
+        "amountPerHour": 1475
+      }
+    ],
+    "requirements": [
+      "Knife"
+    ]
+  },
+  {
+    "id": "yew-longbow-u",
+    "name": "Cutting Yew Longbows",
+    "skill": "Fletching",
+    "level": 70,
+    "afk": {
+      "typicalSeconds": 50,
+      "interactionsPerHour": 72,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 115000
+    },
+    "inputs": [
+      {
+        "name": "Yew logs",
+        "id": 1515,
+        "amountPerHour": 1475
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Yew longbow (u)",
+        "id": 66,
+        "amountPerHour": 1475
+      }
+    ],
+    "requirements": [
+      "Knife"
+    ]
+  },
+  {
+    "id": "stringing-magic-longbows",
+    "name": "Stringing Magic Longbows",
+    "skill": "Fletching",
+    "level": 85,
+    "afk": {
+      "typicalSeconds": 17,
+      "interactionsPerHour": 210,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 150000
+    },
+    "inputs": [
+      {
+        "name": "Magic longbow (u)",
+        "id": 70,
+        "amountPerHour": 1650
+      },
+      {
+        "name": "Bow string",
+        "id": 1777,
+        "amountPerHour": 1650
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Magic longbow",
+        "id": 859,
+        "amountPerHour": 1650
+      }
+    ],
+    "requirements": []
+  },
+  {
+    "id": "zeah-blood-runes",
+    "name": "Zeah Blood Runes",
+    "skill": "Runecraft",
+    "level": 77,
+    "afk": {
+      "typicalSeconds": 45,
+      "interactionsPerHour": 80,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 38000
+    },
+    "inputs": [
+      {
+        "name": "Blood essence",
+        "id": 26390,
+        "amountPerHour": 0.9
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Blood rune",
+        "id": 565,
+        "amountPerHour": 2600
+      }
+    ],
+    "requirements": [
+      "100% Arceuus favour"
+    ]
+  },
+  {
+    "id": "smelting-gold-bars",
+    "name": "Smelting Gold Bars (Edgeville)",
+    "skill": "Smithing",
+    "level": 40,
+    "afk": {
+      "typicalSeconds": 65,
+      "interactionsPerHour": 55,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 90000
+    },
+    "inputs": [
+      {
+        "name": "Gold ore",
+        "id": 444,
+        "amountPerHour": 1600
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Gold bar",
+        "id": 2357,
+        "amountPerHour": 1600
+      }
+    ],
+    "requirements": [
+      "Goldsmith gauntlets"
+    ]
+  },
+  {
+    "id": "cutting-diamonds",
+    "name": "Cutting Diamonds",
+    "skill": "Crafting",
+    "level": 43,
+    "afk": {
+      "typicalSeconds": 32,
+      "interactionsPerHour": 110,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 300000
+    },
+    "inputs": [
+      {
+        "name": "Uncut diamond",
+        "id": 1617,
+        "amountPerHour": 2800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Diamond",
+        "id": 1601,
+        "amountPerHour": 2800
+      }
+    ],
+    "requirements": [
+      "Chisel"
+    ]
+  },
+  {
+    "id": "cutting-dragonstones",
+    "name": "Cutting Dragonstones",
+    "skill": "Crafting",
+    "level": 55,
+    "afk": {
+      "typicalSeconds": 32,
+      "interactionsPerHour": 110,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 385000
+    },
+    "inputs": [
+      {
+        "name": "Uncut dragonstone",
+        "id": 1631,
+        "amountPerHour": 2800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Dragonstone",
+        "id": 1615,
+        "amountPerHour": 2800
+      }
+    ],
+    "requirements": [
+      "Chisel"
+    ]
+  },
+  {
+    "id": "gemstone-crab",
+    "name": "Gemstone Crab (Combat)",
+    "skill": "Combat",
+    "level": 1,
+    "iconUrl": "https://static.runelite.net/cache/item/icon/1613.png",
+    "afk": {
+      "typicalSeconds": 600,
+      "interactionsPerHour": 6,
+      "bankingComplexity": "None"
+    },
+    "xp": {
+      "perHour": 75000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Uncut opal",
+        "id": 1625,
+        "amountPerHour": 5.06
+      },
+      {
+        "name": "Uncut jade",
+        "id": 1627,
+        "amountPerHour": 5.06
+      },
+      {
+        "name": "Uncut red topaz",
+        "id": 1629,
+        "amountPerHour": 3.38
+      },
+      {
+        "name": "Uncut sapphire",
+        "id": 1623,
+        "amountPerHour": 1.69
+      },
+      {
+        "name": "Uncut emerald",
+        "id": 1621,
+        "amountPerHour": 1.13
+      },
+      {
+        "name": "Uncut ruby",
+        "id": 1619,
+        "amountPerHour": 1.13
+      },
+      {
+        "name": "Uncut diamond",
+        "id": 1617,
+        "amountPerHour": 0.56
+      },
+      {
+        "name": "Uncut dragonstone",
+        "id": 1631,
+        "amountPerHour": 0.04
+      }
+    ],
+    "requirements": [
+      "Children of the Sun",
+      "Twilight's Promise (recommended)"
+    ]
+  },
+  {
+    "id": "zeah-soul-runes",
+    "name": "Zeah Soul Runes",
+    "skill": "Runecraft",
+    "level": 90,
+    "afk": {
+      "typicalSeconds": 45,
+      "interactionsPerHour": 80,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 45000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Soul rune",
+        "id": 566,
+        "amountPerHour": 2150
+      }
+    ],
+    "requirements": [
+      "100% Arceuus favour"
+    ]
+  },
+  {
+    "id": "splashing-fire-strike",
+    "name": "Splashing (Fire Strike)",
+    "skill": "Magic",
+    "level": 13,
+    "afk": {
+      "typicalSeconds": 1200,
+      "interactionsPerHour": 3,
+      "bankingComplexity": "None"
+    },
+    "xp": {
+      "perHour": 13700
+    },
+    "inputs": [
+      {
+        "name": "Mind rune",
+        "id": 558,
+        "amountPerHour": 1200
+      },
+      {
+        "name": "Air rune",
+        "id": 556,
+        "amountPerHour": 2400
+      }
+    ],
+    "outputs": [],
+    "requirements": [
+      "Staff of fire",
+      "Negative magic bonus gear (-65)"
+    ]
+  },
+  {
+    "id": "motherlode-mine-upper",
+    "name": "Motherlode Mine (Upper Level)",
+    "skill": "Mining",
+    "level": 72,
+    "afk": {
+      "typicalSeconds": 35,
+      "interactionsPerHour": 90,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 45000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Coal",
+        "id": 453,
+        "amountPerHour": 189
+      },
+      {
+        "name": "Gold ore",
+        "id": 444,
+        "amountPerHour": 154
+      },
+      {
+        "name": "Mithril ore",
+        "id": 447,
+        "amountPerHour": 175
+      },
+      {
+        "name": "Adamantite ore",
+        "id": 449,
+        "amountPerHour": 62
+      },
+      {
+        "name": "Runite ore",
+        "id": 451,
+        "amountPerHour": 20
+      },
+      {
+        "name": "Golden nugget",
+        "id": 12011,
+        "amountPerHour": 16.4
+      }
+    ],
+    "requirements": [
+      "100 Golden nuggets (for upper level access)"
+    ]
+  },
+  {
+    "id": "cutting-rubies",
+    "name": "Cutting Rubies",
+    "skill": "Crafting",
+    "level": 34,
+    "afk": {
+      "typicalSeconds": 32,
+      "interactionsPerHour": 110,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 230000
+    },
+    "inputs": [
+      {
+        "name": "Uncut ruby",
+        "id": 1619,
+        "amountPerHour": 2800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Ruby",
+        "id": 1603,
+        "amountPerHour": 2800
+      }
+    ],
+    "requirements": [
+      "Chisel"
+    ]
+  },
+  {
+    "id": "merchant-shipwrecks",
+    "name": "Merchant shipwreck salvaging",
+    "skill": "Sailing",
+    "level": 87,
+    "afk": {
+      "typicalSeconds": 40,
+      "interactionsPerHour": 90,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 82600
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Dragon cannon barrel",
+        "id": 32115,
+        "amountPerHour": 0.01
+      },
+      {
+        "name": "Dragon nails",
+        "id": 31406,
+        "amountPerHour": 0.28
+      },
+      {
+        "name": "Fish offcuts",
+        "id": 11334,
+        "amountPerHour": 108.96
+      },
+      {
+        "name": "Ironwood repair kit",
+        "id": 31979,
+        "amountPerHour": 6.6
+      },
+      {
+        "name": "Rune cannonball",
+        "id": 31914,
+        "amountPerHour": 6.93
+      },
+      {
+        "name": "Dragon cannonball",
+        "id": 31916,
+        "amountPerHour": 2.31
+      },
+      {
+        "name": "Toadflax seed",
+        "id": 5296,
+        "amountPerHour": 1.31
+      },
+      {
+        "name": "Kwuarm seed",
+        "id": 5299,
+        "amountPerHour": 0.42
+      },
+      {
+        "name": "Snapdragon seed",
+        "id": 5300,
+        "amountPerHour": 0.28
+      },
+      {
+        "name": "Cadantine seed",
+        "id": 5301,
+        "amountPerHour": 0.19
+      },
+      {
+        "name": "Snape grass seed",
+        "id": 22879,
+        "amountPerHour": 0.36
+      },
+      {
+        "name": "Torstol seed",
+        "id": 5304,
+        "amountPerHour": 0.05
+      },
+      {
+        "name": "Grimy avantoe",
+        "id": 211,
+        "amountPerHour": 2.06
+      },
+      {
+        "name": "Grimy ranarr weed",
+        "id": 207,
+        "amountPerHour": 1.65
+      },
+      {
+        "name": "Grimy snapdragon",
+        "id": 3051,
+        "amountPerHour": 1.65
+      },
+      {
+        "name": "Grimy torstol",
+        "id": 219,
+        "amountPerHour": 1.24
+      },
+      {
+        "name": "Grimy kwuarm",
+        "id": 213,
+        "amountPerHour": 2.06
+      },
+      {
+        "name": "Grimy dwarf weed",
+        "id": 217,
+        "amountPerHour": 1.65
+      },
+      {
+        "name": "Grimy cadantine",
+        "id": 215,
+        "amountPerHour": 1.65
+      },
+      {
+        "name": "Grimy lantadyme",
+        "id": 2485,
+        "amountPerHour": 1.24
+      },
+      {
+        "name": "Coins",
+        "id": 995,
+        "amountPerHour": 39622.64
+      },
+      {
+        "name": "Platinum token",
+        "id": 13204,
+        "amountPerHour": 39.62
+      },
+      {
+        "name": "Uncut opal",
+        "id": 1625,
+        "amountPerHour": 19.81
+      },
+      {
+        "name": "Uncut jade",
+        "id": 1627,
+        "amountPerHour": 19.81
+      },
+      {
+        "name": "Uncut red topaz",
+        "id": 1629,
+        "amountPerHour": 19.81
+      },
+      {
+        "name": "Uncut sapphire",
+        "id": 1623,
+        "amountPerHour": 3.25
+      },
+      {
+        "name": "Uncut emerald",
+        "id": 1621,
+        "amountPerHour": 1.63
+      },
+      {
+        "name": "Uncut ruby",
+        "id": 1619,
+        "amountPerHour": 0.81
+      },
+      {
+        "name": "Uncut diamond",
+        "id": 1617,
+        "amountPerHour": 0.2
+      },
+      {
+        "name": "Rune spear",
+        "id": 1247,
+        "amountPerHour": 0.05
+      },
+      {
+        "name": "Shield left half",
+        "id": 2366,
+        "amountPerHour": 0.03
+      },
+      {
+        "name": "Dragon spear",
+        "id": 1249,
+        "amountPerHour": 0.02
+      }
+    ],
+    "requirements": [
+      "Sailing sloop",
+      "Salvaging station (facility)"
+    ]
+  },
+  {
+    "id": "fremennik-shipwrecks",
+    "name": "Fremennik shipwreck salvaging",
+    "skill": "Sailing",
+    "level": 80,
+    "afk": {
+      "typicalSeconds": 40,
+      "interactionsPerHour": 90,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 73470
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 46.44
+      },
+      {
+        "name": "Adamantite nails",
+        "id": 4823,
+        "amountPerHour": 23.22
+      },
+      {
+        "name": "Rune nails",
+        "id": 4824,
+        "amountPerHour": 11.61
+      },
+      {
+        "name": "Rune cannonball",
+        "id": 31914,
+        "amountPerHour": 20.32
+      },
+      {
+        "name": "Mahogany plank",
+        "id": 8782,
+        "amountPerHour": 5.81
+      },
+      {
+        "name": "Umbral frag",
+        "id": 31515,
+        "amountPerHour": 0.58
+      },
+      {
+        "name": "Cotton seed",
+        "id": 31545,
+        "amountPerHour": 2.32
+      },
+      {
+        "name": "Berserker helm",
+        "id": 3751,
+        "amountPerHour": 0.93
+      },
+      {
+        "name": "Archer helm",
+        "id": 3749,
+        "amountPerHour": 0.93
+      },
+      {
+        "name": "Farseer helm",
+        "id": 3755,
+        "amountPerHour": 0.93
+      },
+      {
+        "name": "Warrior helm",
+        "id": 3753,
+        "amountPerHour": 0.93
+      },
+      {
+        "name": "Ironwood seed",
+        "id": 31549,
+        "amountPerHour": 0.58
+      },
+      {
+        "name": "Rosewood seed",
+        "id": 31551,
+        "amountPerHour": 0.12
+      }
+    ],
+    "requirements": [
+      "Sailing sloop",
+      "Salvaging station (facility)"
+    ]
+  },
+  {
+    "id": "mercenary-shipwrecks",
+    "name": "Mercenary shipwreck salvaging",
+    "skill": "Sailing",
+    "level": 73,
+    "afk": {
+      "typicalSeconds": 40,
+      "interactionsPerHour": 90,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 63472
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Mithril dart tip",
+        "id": 822,
+        "amountPerHour": 116.19
+      },
+      {
+        "name": "Mithril longsword",
+        "id": 1299,
+        "amountPerHour": 38.73
+      },
+      {
+        "name": "Adamant arrowtips",
+        "id": 43,
+        "amountPerHour": 116.19
+      },
+      {
+        "name": "Adamant arrow",
+        "id": 890,
+        "amountPerHour": 51.64
+      },
+      {
+        "name": "Adamant longsword",
+        "id": 1301,
+        "amountPerHour": 25.82
+      },
+      {
+        "name": "Adamant dart tip",
+        "id": 823,
+        "amountPerHour": 51.64
+      },
+      {
+        "name": "Amulet of power",
+        "id": 1731,
+        "amountPerHour": 25.82
+      },
+      {
+        "name": "Adamant cannonball",
+        "id": 31912,
+        "amountPerHour": 45.18
+      },
+      {
+        "name": "Adamant 2h sword",
+        "id": 1317,
+        "amountPerHour": 12.91
+      },
+      {
+        "name": "Adamant bolts(unf)",
+        "id": 9380,
+        "amountPerHour": 25.82
+      },
+      {
+        "name": "Rune arrow",
+        "id": 892,
+        "amountPerHour": 25.82
+      },
+      {
+        "name": "Green d'hide body",
+        "id": 1135,
+        "amountPerHour": 12.91
+      },
+      {
+        "name": "Adamantite nails",
+        "id": 4823,
+        "amountPerHour": 12.91
+      },
+      {
+        "name": "Rune cannonball",
+        "id": 31914,
+        "amountPerHour": 19.36
+      },
+      {
+        "name": "Camphor seed",
+        "id": 31547,
+        "amountPerHour": 1.29
+      },
+      {
+        "name": "Rune longsword",
+        "id": 1303,
+        "amountPerHour": 1.29
+      },
+      {
+        "name": "Umbral frag",
+        "id": 31515,
+        "amountPerHour": 1.29
+      },
+      {
+        "name": "Ironwood seed",
+        "id": 31549,
+        "amountPerHour": 0.13
+      },
+      {
+        "name": "Dragon cannonball",
+        "id": 31916,
+        "amountPerHour": 0.26
+      },
+      {
+        "name": "Salvor's paint",
+        "id": 32876,
+        "amountPerHour": 0.01
+      }
+    ],
+    "requirements": [
+      "Sailing sloop",
+      "Salvaging station (facility)"
+    ]
+  },
+  {
+    "id": "camphor-trees",
+    "name": "Camphor trees",
+    "skill": "Woodcutting",
+    "level": 66,
+    "afk": {
+      "typicalSeconds": 120,
+      "interactionsPerHour": 30,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 82513
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Camphor logs",
+        "id": 32904,
+        "amountPerHour": 575
+      }
+    ],
+    "requirements": [
+      "The Great Conch"
+    ]
+  },
+  {
+    "id": "ironwood-trees",
+    "name": "Ironwood trees",
+    "skill": "Woodcutting",
+    "level": 80,
+    "afk": {
+      "typicalSeconds": 240,
+      "interactionsPerHour": 15,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 75000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Ironwood logs",
+        "id": 32907,
+        "amountPerHour": 430
+      }
+    ],
+    "requirements": [
+      "72 Sailing",
+      "Sunbleak Island"
+    ]
+  },
+  {
+    "id": "rosewood-trees",
+    "name": "Rosewood trees",
+    "skill": "Woodcutting",
+    "level": 92,
+    "afk": {
+      "typicalSeconds": 274,
+      "interactionsPerHour": 13,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 37188
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Rosewood logs",
+        "id": 32910,
+        "amountPerHour": 175
+      }
+    ],
+    "requirements": [
+      "79 Sailing",
+      "Drumstick Isle"
+    ]
+  }
+]
