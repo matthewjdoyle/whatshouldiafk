@@ -414,6 +414,15 @@ function App() {
               </p>
             </div>
 
+            <div id="plank-make-profit" className="space-y-2 p-4 rounded-md">
+              <h3 className="text-lg font-semibold text-accent">How is the Plank Make profit calculated?</h3>
+              <p>
+                The profit displayed for Plank Make methods is an <strong>average expected value per hour</strong>, calculated by simulating 960 casts per hour (typical for auto-casting).
+              </p>
+              <p>
+                We deduct the live GE cost of inputs, as well as the exact coin fee required to cast the spell on each specific log type, to give you a highly accurate, dynamic profit estimation.
+              </p>
+            </div>
             <div className="space-y-2 pt-4 border-t border-main">
               <h3 className="text-lg font-semibold text-accent">About</h3>
               <p>

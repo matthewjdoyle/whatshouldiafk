@@ -1,8 +1,225 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import type { MethodResult } from '../calculations/profit';
 import { formatGp } from '../calculations/profit';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+
+const EconomicsCell: React.FC<{ result: MethodResult }> = ({ result }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0, right: 0, bottom: 0 });
+  const timeoutRef = useRef<number | null>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.top,
+        left: rect.left,
+        right: rect.right,
+        bottom: rect.bottom,
+      });
+    }
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = window.setTimeout(() => {
+      setIsOpen(false);
+    }, 150);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const isSpecialEconomics = ['gemstone-crab', 'infernal-eels', 'motherlode-mine-upper', 'mercenary-shipwrecks', 'merchant-shipwrecks', 'fremennik-shipwrecks'].includes(result.method.id) || result.method.id.includes('plank-make');
+
+  if (!isSpecialEconomics) {
+    const baseInput = result.method.inputs.length > 0 ? result.method.inputs[0] : null;
+
+    return (
+      <>
+        {result.itemPrices.map((ip) => {
+          let prefix = '';
+          let displayPrice = ip.price;
+          
+          if (baseInput && ip.amountPerHour > 0 && baseInput.amountPerHour > 0) {
+            let ratio = ip.amountPerHour / baseInput.amountPerHour;
+
+            if (result.method.id === 'cannonballs-double') {
+              if (ip.id === 2) ratio = 8; // 8x cannonballs
+              if (ip.id === 2353) ratio = 2; // 2x bars per action
+            }
+
+            if (ratio > 1 && Math.abs(ratio - Math.round(ratio)) < 0.01) {
+              const roundedRatio = Math.round(ratio);
+              prefix = `${roundedRatio}x `;
+              displayPrice = ip.price * roundedRatio;
+            }
+          }
+
+          return (
+            <div key={ip.id} className="flex justify-between items-center w-40">
+              <button
+                type="button"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  const url = `https://secure.runescape.com/m=itemdb_oldschool/${encodeURIComponent(ip.name).replace(/%20/g, '+')}/viewitem?obj=${ip.id}`;
+                  try {
+                    const { open } = await import('@tauri-apps/plugin-shell');
+                    await open(url);
+                  } catch (err) {
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                  }
+                }}
+                className={`text-left cursor-pointer bg-transparent border-none p-0 ${ip.isInput ? 'text-loss-dim' : 'text-profit-dim'} hover:underline truncate mr-2`}
+              >
+                {prefix}{ip.name}
+              </button>
+              <span className="text-muted whitespace-nowrap">
+                {displayPrice.toLocaleString()} gp
+              </span>
+            </div>
+          );
+        })}
+      </>
+    );
+  }
+
+  const popoutWidth = 288;
+  const isOverflowingRight = typeof window !== 'undefined' ? coords.left + popoutWidth > window.innerWidth - 20 : false;
+  
+  const popoutStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: coords.bottom,
+    ...(isOverflowingRight 
+        ? { right: (typeof window !== 'undefined' ? window.innerWidth : 0) - coords.right }
+        : { left: coords.left }),
+    zIndex: 9999,
+  };
+
+  return (
+    <div 
+      className="flex items-center w-40 relative" 
+      ref={triggerRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          let faqId = '';
+          if (result.method.id === 'gemstone-crab') faqId = 'crab-profit';
+          if (result.method.id === 'infernal-eels') faqId = 'eel-profit';
+          if (result.method.id === 'motherlode-mine-upper') faqId = 'mlm-profit';
+          if (result.method.id.includes('-shipwrecks')) faqId = 'salvage-profit';
+          if (result.method.id.includes('plank-make')) faqId = 'plank-make-profit';
+          if (faqId) {
+            window.dispatchEvent(new CustomEvent('open-faq', { detail: faqId }));
+          }
+        }}
+        className="text-left cursor-pointer hover:underline bg-transparent border-none p-0 text-profit-dim"
+      >
+        {result.method.id === 'gemstone-crab' && 'Average Gem Loot'}
+        {result.method.id === 'infernal-eels' && 'Average Eel Loot'}
+        {result.method.id === 'motherlode-mine-upper' && 'Average Pay-dirt Loot'}
+        {result.method.id.includes('-shipwrecks') && 'Average Salvage Loot'}
+        {result.method.id.includes('plank-make') && 'Cost Breakdown'}
+      </button>
+      
+      {isOpen && typeof document !== 'undefined' && createPortal(
+        <div 
+          style={popoutStyle}
+          className="pt-2"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="w-72 p-3 bg-surface border border-main rounded shadow-xl">
+            <div className="mb-2 text-sm font-medium text-main border-b border-main pb-1 flex justify-between items-end">
+              <span>
+                {result.method.id === 'gemstone-crab' && 'Gem table'}
+                {result.method.id === 'infernal-eels' && 'Eel table'}
+                {result.method.id === 'motherlode-mine-upper' && 'Pay-dirt table'}
+                {result.method.id.includes('-shipwrecks') && 'Salvage table'}
+                {result.method.id.includes('plank-make') && 'Cost Breakdown'}
+              </span>
+              <div className="flex gap-2 justify-end text-muted text-xs font-normal">
+                {!result.method.id.includes('plank-make') && <span className="w-12 text-right">Rate</span>}
+                <span className={result.method.id.includes('plank-make') ? "text-right" : "w-20 text-right"}>
+                  {result.method.id.includes('plank-make') ? "Value" : "Value (gp)"}
+                </span>
+              </div>
+            </div>
+            <div className="space-y-1">
+              {result.itemPrices.length > 0 ? result.itemPrices.map((ip) => {
+                let kph = 0;
+                if (result.method.id === 'merchant-shipwrecks') kph = 280;
+                else if (result.method.id === 'fremennik-shipwrecks') kph = 310;
+                else if (result.method.id === 'mercenary-shipwrecks') kph = 315;
+                else if (result.method.id === 'gemstone-crab') kph = 18;
+                else if (result.method.id === 'infernal-eels') kph = 315;
+                else if (result.method.id === 'motherlode-mine-upper') kph = 600;
+
+                let rateStr = '';
+                if (kph > 0 && ip.amountPerHour > 0) {
+                  const perKill = ip.amountPerHour / kph;
+                  if (perKill >= 1) {
+                    rateStr = perKill.toFixed(2).replace(/\.00$/, '');
+                  } else {
+                    const denom = 1 / perKill;
+                    if (denom >= 1000) rateStr = `1/${(denom / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+                    else rateStr = `1/${Math.round(denom)}`;
+                  }
+                }
+
+                let valStr = ip.price.toLocaleString();
+                if (result.method.id.includes('plank-make')) {
+                  valStr = `${(ip.amountPerHour / 960).toLocaleString()} x ${ip.price.toLocaleString()} gp`;
+                }
+
+                return (
+                  <div key={ip.id} className="flex justify-between items-center text-xs">
+                    <span className={`${ip.isInput ? 'text-loss-dim' : 'text-profit-dim'} truncate mr-2 flex-1`}>{ip.name}</span>
+                    <div className="flex items-center text-muted whitespace-nowrap gap-2 justify-end">
+                      {!result.method.id.includes('plank-make') && <span className="w-12 text-right">{rateStr}</span>}
+                      <span className={result.method.id.includes('plank-make') ? "text-right" : "w-20 text-right"}>{valStr}</span>
+                    </div>
+                  </div>
+                );
+              }) : (
+                <div className="text-muted text-xs italic">See FAQ for dynamic rates.</div>
+              )}
+            </div>
+            {(() => {
+              let volumeText = '';
+              if (result.method.id === 'merchant-shipwrecks') volumeText = '280 salvage sorted / hr';
+              else if (result.method.id === 'fremennik-shipwrecks') volumeText = '310 salvage sorted / hr';
+              else if (result.method.id === 'mercenary-shipwrecks') volumeText = '315 salvage sorted / hr';
+              else if (result.method.id === 'gemstone-crab') volumeText = '18 gem rolls / hr';
+              else if (result.method.id === 'infernal-eels') volumeText = '315 eels smashed / hr';
+              else if (result.method.id === 'motherlode-mine-upper') volumeText = '600 pay-dirts cleaned / hr';
+              else if (result.method.id.includes('plank-make')) volumeText = '960 planks made / hr';
+              
+              if (!volumeText) return null;
+              return (
+                <div className="mt-2 pt-2 border-t border-main text-xs text-muted text-center">
+                  Estimated {volumeText}
+                </div>
+              );
+            })()}
+          </div>
+        </div>,
+        document.body
+      )}
+    </div>
+  );
+};
 
 interface Props {
   results: MethodResult[];
@@ -172,98 +389,7 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
                     )}
                     {showEconomicsColumn && (
                       <td className="p-4 text-xs relative">
-                        {['gemstone-crab', 'infernal-eels', 'motherlode-mine-upper', 'mercenary-shipwrecks', 'merchant-shipwrecks', 'fremennik-shipwrecks'].includes(result.method.id) ? (
-                          <div className="flex items-center w-40 group">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                let faqId = '';
-                                if (result.method.id === 'gemstone-crab') faqId = 'crab-profit';
-                                if (result.method.id === 'infernal-eels') faqId = 'eel-profit';
-                                if (result.method.id === 'motherlode-mine-upper') faqId = 'mlm-profit';
-                                if (result.method.id.includes('-shipwrecks')) faqId = 'salvage-profit';
-                                if (faqId) {
-                                  window.dispatchEvent(new CustomEvent('open-faq', { detail: faqId }));
-                                }
-                              }}
-                              className={`text-left ${['gemstone-crab', 'infernal-eels', 'motherlode-mine-upper', 'mercenary-shipwrecks', 'merchant-shipwrecks', 'fremennik-shipwrecks'].includes(result.method.id) ? 'cursor-pointer hover:underline' : 'cursor-default'} bg-transparent border-none p-0 text-profit-dim`}
-                            >
-                              {result.method.id === 'gemstone-crab' && 'Average Gem Loot'}
-                              {result.method.id === 'infernal-eels' && 'Average Eel Loot'}
-                              {result.method.id === 'motherlode-mine-upper' && 'Average Pay-dirt Loot'}
-                              {result.method.id.includes('-shipwrecks') && 'Average Salvage Loot'}
-                            </button>
-                            <div className="absolute left-4 top-full mt-1 w-72 p-3 bg-surface border border-main rounded shadow-xl z-50 hidden group-hover:block">
-                              <div className="mb-2 font-medium text-main border-b border-main pb-1 flex justify-between items-end">
-                                <span>Hourly Breakdown</span>
-                                <div className="flex gap-2 justify-end w-32 text-muted text-xs font-normal">
-                                  <span className="w-12 text-right">Rate</span>
-                                  <span className="w-16 text-right">Value</span>
-                                </div>
-                              </div>
-                              <div className="space-y-1">
-                                {result.itemPrices.length > 0 ? result.itemPrices.map((ip) => {
-                                  let kph = 0;
-                                  if (result.method.id === 'merchant-shipwrecks') kph = 280;
-                                  else if (result.method.id === 'fremennik-shipwrecks') kph = 310;
-                                  else if (result.method.id === 'mercenary-shipwrecks') kph = 315;
-                                  else if (result.method.id === 'gemstone-crab') kph = 18;
-                                  else if (result.method.id === 'infernal-eels') kph = 315;
-                                  else if (result.method.id === 'motherlode-mine-upper') kph = 600;
-
-                                  let rateStr = '';
-                                  if (kph > 0 && ip.amountPerHour > 0) {
-                                    const perKill = ip.amountPerHour / kph;
-                                    if (perKill >= 1) {
-                                      rateStr = perKill.toFixed(2).replace(/\.00$/, '');
-                                    } else {
-                                      const denom = 1 / perKill;
-                                      if (denom >= 1000) rateStr = `1/${(denom / 1000).toFixed(1).replace(/\.0$/, '')}k`;
-                                      else rateStr = `1/${Math.round(denom)}`;
-                                    }
-                                  }
-
-                                  return (
-                                    <div key={ip.id} className="flex justify-between items-center text-xs">
-                                      <span className={`${ip.isInput ? 'text-loss-dim' : 'text-profit-dim'} truncate mr-2 flex-1`}>{ip.name}</span>
-                                      <div className="flex items-center text-muted whitespace-nowrap gap-2 justify-end w-32">
-                                        <span className="w-12 text-right">{rateStr}</span>
-                                        <span className="w-16 text-right">{ip.price.toLocaleString()}</span>
-                                      </div>
-                                    </div>
-                                  );
-                                }) : (
-                                  <div className="text-muted text-xs italic">See FAQ for dynamic rates.</div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          result.itemPrices.map((ip) => (
-                            <div key={ip.id} className="flex justify-between items-center w-40">
-                              <button
-                                type="button"
-                                onClick={async (e) => {
-                                  e.preventDefault();
-                                  const url = `https://secure.runescape.com/m=itemdb_oldschool/${encodeURIComponent(ip.name).replace(/%20/g, '+')}/viewitem?obj=${ip.id}`;
-                                  try {
-                                    const { open } = await import('@tauri-apps/plugin-shell');
-                                    await open(url);
-                                  } catch (err) {
-                                    window.open(url, '_blank', 'noopener,noreferrer');
-                                  }
-                                }}
-                                className={`text-left cursor-pointer bg-transparent border-none p-0 ${ip.isInput ? 'text-loss-dim' : 'text-profit-dim'} hover:underline truncate mr-2`}
-                              >
-                                {ip.name}
-                              </button>
-                              <span className="text-muted whitespace-nowrap">
-                                {ip.price.toLocaleString()} gp {ip.tax > 0 && <span className="text-muted ml-1 opacity-75">(-{ip.tax})</span>}
-                              </span>
-                            </div>
-                          ))
-                        )}
+                        <EconomicsCell result={result} />
                       </td>
                     )}
                     {showGeLimitColumn && (

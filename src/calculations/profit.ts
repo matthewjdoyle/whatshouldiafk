@@ -64,8 +64,15 @@ export function calculateMethod(
   const itemPrices: MethodResult['itemPrices'] = [];
 
   for (const input of method.inputs) {
-    const priceData = prices[input.id.toString()];
-    const buyPrice = priceData ? (priceData.high || priceData.low || 0) : 0;
+    let buyPrice = 0;
+    if (input.id === 995) {
+      buyPrice = 1;
+    } else if (input.id === 13204) {
+      buyPrice = 1000;
+    } else {
+      const priceData = prices[input.id.toString()];
+      buyPrice = priceData ? (priceData.high || priceData.low || 0) : 0;
+    }
     costPerHour += buyPrice * input.amountPerHour;
 
     const mapData = mapping[input.id.toString()];
@@ -80,10 +87,21 @@ export function calculateMethod(
   }
 
   for (const output of method.outputs) {
-    const priceData = prices[output.id.toString()];
-    const sellPrice = priceData ? (priceData.low || priceData.high || 0) : 0;
+    let sellPrice = 0;
+    let tax = 0;
     
-    const tax = geTax(sellPrice, false);
+    if (output.id === 995) {
+      sellPrice = 1;
+      tax = 0;
+    } else if (output.id === 13204) {
+      sellPrice = 1000;
+      tax = 0;
+    } else {
+      const priceData = prices[output.id.toString()];
+      sellPrice = priceData ? (priceData.low || priceData.high || 0) : 0;
+      tax = geTax(sellPrice, false);
+    }
+    
     const netSellPrice = sellPrice - tax;
     const mapData = mapping[output.id.toString()];
 

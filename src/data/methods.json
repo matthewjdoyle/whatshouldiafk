@@ -488,40 +488,389 @@
     "skill": "Magic",
     "level": 86,
     "afk": {
-      "typicalSeconds": 90,
-      "interactionsPerHour": 40,
+      "typicalSeconds": 85,
+      "interactionsPerHour": 42,
       "bankingComplexity": "Medium"
     },
     "xp": {
-      "perHour": 90000
+      "perHour": 86400
     },
     "inputs": [
       {
         "name": "Mahogany logs",
         "id": 6332,
-        "amountPerHour": 1000
+        "amountPerHour": 960
       },
       {
         "name": "Nature rune",
         "id": 561,
-        "amountPerHour": 1000
+        "amountPerHour": 960
       },
       {
         "name": "Astral rune",
         "id": 9075,
-        "amountPerHour": 2000
+        "amountPerHour": 1920
       },
       {
         "name": "Coins",
         "id": 995,
-        "amountPerHour": 1050000
+        "amountPerHour": 1008000
       }
     ],
     "outputs": [
       {
         "name": "Mahogany plank",
         "id": 8782,
-        "amountPerHour": 1000
+        "amountPerHour": 960
+      }
+    ],
+    "requirements": [
+      "Lunar Diplomacy",
+      "Dream Mentor"
+    ]
+  },
+  {
+    "id": "plank-make-mahogany-voucher",
+    "name": "Plank Make (Mahogany, Vouchers)",
+    "skill": "Magic",
+    "level": 86,
+    "afk": {
+      "typicalSeconds": 47,
+      "interactionsPerHour": 77,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 86400
+    },
+    "inputs": [
+      {
+        "name": "Mahogany logs",
+        "id": 6332,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Nature rune",
+        "id": 561,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 1920
+      },
+      {
+        "name": "Coins",
+        "id": 995,
+        "amountPerHour": 1008000
+      },
+      {
+        "name": "Sawmill voucher",
+        "id": 28628,
+        "amountPerHour": 960
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Mahogany plank",
+        "id": 8782,
+        "amountPerHour": 1920
+      }
+    ],
+    "requirements": [
+      "Lunar Diplomacy",
+      "Dream Mentor"
+    ]
+  },
+  {
+    "id": "plank-make-camphor",
+    "name": "Plank Make (Camphor)",
+    "skill": "Magic",
+    "level": 86,
+    "afk": {
+      "typicalSeconds": 85,
+      "interactionsPerHour": 42,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 86400
+    },
+    "inputs": [
+      {
+        "name": "Camphor logs",
+        "id": 32904,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Nature rune",
+        "id": 561,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 1920
+      },
+      {
+        "name": "Coins",
+        "id": 995,
+        "amountPerHour": 1680000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Camphor plank",
+        "id": 31432,
+        "amountPerHour": 960
+      }
+    ],
+    "requirements": [
+      "Lunar Diplomacy",
+      "Dream Mentor"
+    ]
+  },
+  {
+    "id": "plank-make-camphor-voucher",
+    "name": "Plank Make (Camphor, Vouchers)",
+    "skill": "Magic",
+    "level": 86,
+    "afk": {
+      "typicalSeconds": 47,
+      "interactionsPerHour": 77,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 86400
+    },
+    "inputs": [
+      {
+        "name": "Camphor logs",
+        "id": 32904,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Nature rune",
+        "id": 561,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 1920
+      },
+      {
+        "name": "Coins",
+        "id": 995,
+        "amountPerHour": 1680000
+      },
+      {
+        "name": "Sawmill voucher",
+        "id": 28628,
+        "amountPerHour": 960
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Camphor plank",
+        "id": 31432,
+        "amountPerHour": 1920
+      }
+    ],
+    "requirements": [
+      "Lunar Diplomacy",
+      "Dream Mentor"
+    ]
+  },
+  {
+    "id": "plank-make-ironwood",
+    "name": "Plank Make (Ironwood)",
+    "skill": "Magic",
+    "level": 86,
+    "afk": {
+      "typicalSeconds": 85,
+      "interactionsPerHour": 42,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 86400
+    },
+    "inputs": [
+      {
+        "name": "Ironwood logs",
+        "id": 32907,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Nature rune",
+        "id": 561,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 1920
+      },
+      {
+        "name": "Coins",
+        "id": 995,
+        "amountPerHour": 3360000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Ironwood plank",
+        "id": 31435,
+        "amountPerHour": 960
+      }
+    ],
+    "requirements": [
+      "Lunar Diplomacy",
+      "Dream Mentor"
+    ]
+  },
+  {
+    "id": "plank-make-ironwood-voucher",
+    "name": "Plank Make (Ironwood, Vouchers)",
+    "skill": "Magic",
+    "level": 86,
+    "afk": {
+      "typicalSeconds": 47,
+      "interactionsPerHour": 77,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 86400
+    },
+    "inputs": [
+      {
+        "name": "Ironwood logs",
+        "id": 32907,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Nature rune",
+        "id": 561,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 1920
+      },
+      {
+        "name": "Coins",
+        "id": 995,
+        "amountPerHour": 3360000
+      },
+      {
+        "name": "Sawmill voucher",
+        "id": 28628,
+        "amountPerHour": 960
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Ironwood plank",
+        "id": 31435,
+        "amountPerHour": 1920
+      }
+    ],
+    "requirements": [
+      "Lunar Diplomacy",
+      "Dream Mentor"
+    ]
+  },
+  {
+    "id": "plank-make-rosewood",
+    "name": "Plank Make (Rosewood)",
+    "skill": "Magic",
+    "level": 86,
+    "afk": {
+      "typicalSeconds": 85,
+      "interactionsPerHour": 42,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 86400
+    },
+    "inputs": [
+      {
+        "name": "Rosewood logs",
+        "id": 32910,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Nature rune",
+        "id": 561,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 1920
+      },
+      {
+        "name": "Coins",
+        "id": 995,
+        "amountPerHour": 5040000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Rosewood plank",
+        "id": 31438,
+        "amountPerHour": 960
+      }
+    ],
+    "requirements": [
+      "Lunar Diplomacy",
+      "Dream Mentor"
+    ]
+  },
+  {
+    "id": "plank-make-rosewood-voucher",
+    "name": "Plank Make (Rosewood, Vouchers)",
+    "skill": "Magic",
+    "level": 86,
+    "afk": {
+      "typicalSeconds": 47,
+      "interactionsPerHour": 77,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 86400
+    },
+    "inputs": [
+      {
+        "name": "Rosewood logs",
+        "id": 32910,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Nature rune",
+        "id": 561,
+        "amountPerHour": 960
+      },
+      {
+        "name": "Astral rune",
+        "id": 9075,
+        "amountPerHour": 1920
+      },
+      {
+        "name": "Coins",
+        "id": 995,
+        "amountPerHour": 5040000
+      },
+      {
+        "name": "Sawmill voucher",
+        "id": 28628,
+        "amountPerHour": 960
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Rosewood plank",
+        "id": 31438,
+        "amountPerHour": 1920
       }
     ],
     "requirements": [
