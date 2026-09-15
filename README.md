@@ -19,6 +19,10 @@ The table displays information like:
 
 *Note: All AFK times, interactions per hour, and XP rates are referenced and verified against the official [OSRS Wiki](https://oldschool.runescape.wiki/) to ensure accurate estimations.*
 
+---
+
+*3 Themes to choose from* 
+
 <p align="center">
   <img src="previews.png" title="" alt="App Previews showcasing all 3 styles" width="678">
 </p>
