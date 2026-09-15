@@ -21,10 +21,10 @@ The table displays information like:
 
 ---
 
-*3 Themes to choose from* 
+**3 themes to choose from** 
 
 <p align="center">
-  <img src="previews.png" title="" alt="App Previews showcasing all 3 styles" width="678">
+  <img src="previews.png" title="" alt="App Previews showcasing all 3 styles" width="100%">
 </p>
 
 ---
