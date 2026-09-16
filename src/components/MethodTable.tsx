@@ -416,13 +416,13 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
                     )}
                     {showGeLimitColumn && (
                       <td className="p-4 text-xs text-muted">
-                        {result.itemPrices.filter(ip => ip.isInput).map((ip) => (
+                        {result.itemPrices.filter(ip => ip.isInput && ip.limit).map((ip) => (
                           <div key={ip.id} className="flex justify-between items-center w-32">
                             <span className="truncate pr-2">{ip.name}</span>
-                            <span>{ip.limit ? `${ip.limit.toLocaleString()}/4h` : '-'}</span>
+                            <span>{`${(ip.limit || 0).toLocaleString()}/4h`}</span>
                           </div>
                         ))}
-                        {result.itemPrices.filter(ip => ip.isInput).length === 0 && (
+                        {result.itemPrices.filter(ip => ip.isInput && ip.limit).length === 0 && (
                           <span>N/A</span>
                         )}
                       </td>
