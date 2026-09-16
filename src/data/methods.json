@@ -1154,13 +1154,7 @@
     "xp": {
       "perHour": 38000
     },
-    "inputs": [
-      {
-        "name": "Blood essence",
-        "id": 26390,
-        "amountPerHour": 0.9
-      }
-    ],
+    "inputs": [],
     "outputs": [
       {
         "name": "Blood rune",

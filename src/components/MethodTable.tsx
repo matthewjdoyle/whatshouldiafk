@@ -253,7 +253,7 @@ interface Props {
 }
 
 const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, showEconomicsColumn = true, showGeLimitColumn = true, showGpXpColumn = true }) => {
-  const [sortField, setSortField] = useLocalStorage<'profit' | 'xp' | 'afk' | 'sustain' | 'gpxp'>('afk-sortField', 'profit');
+  const [sortField, setSortField] = useLocalStorage<'profit' | 'xp' | 'afk' | 'sustain' | 'gpxp' | 'method' | 'skill'>('afk-sortField', 'profit');
   const [sortDesc, setSortDesc] = useLocalStorage<boolean>('afk-sortDesc', true);
 
   const handleSort = (field: typeof sortField) => {
@@ -266,6 +266,15 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
   };
 
   const sortedResults = [...results].sort((a, b) => {
+    if (sortField === 'method') {
+      const cmp = a.method.name.localeCompare(b.method.name);
+      return sortDesc ? cmp : -cmp; // true means A-Z first time
+    }
+    if (sortField === 'skill') {
+      const cmp = a.method.skill.localeCompare(b.method.skill);
+      return sortDesc ? cmp : -cmp;
+    }
+
     let aVal = 0;
     let bVal = 0;
     switch (sortField) {
@@ -304,7 +313,7 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
 
   const renderSortIcon = (field: typeof sortField) => {
     if (sortField !== field) return null;
-    return sortDesc ? <ArrowDown className="w-3 h-3 inline ml-1" /> : <ArrowUp className="w-3 h-3 inline ml-1" />;
+    return sortDesc ? <ArrowUp className="w-3 h-3 inline ml-1" /> : <ArrowDown className="w-3 h-3 inline ml-1" />;
   };
 
   const visibleColumnsCount = 4 + (showAfkColumn ? 1 : 0) + (showEconomicsColumn ? 1 : 0) + (showGeLimitColumn ? 1 : 0) + (showGpXpColumn ? 1 : 0);
@@ -315,8 +324,12 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="bg-app text-muted border-b border-main">
             <tr>
-              <th className="p-4 font-medium">Method</th>
-              <th className="p-4 font-medium">Skill</th>
+              <th className="p-4 font-medium cursor-pointer hover:text-accent" onClick={() => handleSort('method')}>
+                Method {renderSortIcon('method')}
+              </th>
+              <th className="p-4 font-medium cursor-pointer hover:text-accent" onClick={() => handleSort('skill')}>
+                Skill {renderSortIcon('skill')}
+              </th>
               {showAfkColumn && (
                 <th className="p-4 font-medium cursor-pointer hover:text-accent" onClick={() => handleSort('afk')}>
                   AFK Time {renderSortIcon('afk')}
