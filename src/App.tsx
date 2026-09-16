@@ -15,20 +15,20 @@ function App() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   
   // Theme
-  const [theme, setTheme] = useLocalStorage<'dark' | 'light' | 'rsmode'>('afk-theme', 'dark');
+  const [theme, setTheme] = useLocalStorage<'dark' | 'light' | 'rsmode'>('afk-theme', 'rsmode');
 
   // Filters
-  const [minAfk, setMinAfk] = useLocalStorage<number>('afk-minAfk', 60);
+  const [minAfk, setMinAfk] = useLocalStorage<number>('afk-minAfk', 0);
   const [minXp, setMinXp] = useLocalStorage<number>('afk-minXp', 0);
-  const [profitableOnly, setProfitableOnly] = useLocalStorage<boolean>('afk-profitableOnly', true);
+  const [profitableOnly, setProfitableOnly] = useLocalStorage<boolean>('afk-profitableOnly', false);
   const [selectedSkills, setSelectedSkills] = useLocalStorage<string[]>('afk-selectedSkills', []);
   const [isSkillSelectorOpen, setIsSkillSelectorOpen] = useState(false);
   
   // Columns
   const [showAfkColumn, setShowAfkColumn] = useLocalStorage<boolean>('afk-showAfkColumn', true);
   const [showEconomicsColumn, setShowEconomicsColumn] = useLocalStorage<boolean>('afk-showEconomicsColumn', true);
-  const [showGeLimitColumn, setShowGeLimitColumn] = useLocalStorage<boolean>('afk-showGeLimitColumn', true);
-  const [showGpXpColumn, setShowGpXpColumn] = useLocalStorage<boolean>('afk-showGpXpColumn', true);
+  const [showGeLimitColumn, setShowGeLimitColumn] = useLocalStorage<boolean>('afk-showGeLimitColumn', false);
+  const [showGpXpColumn, setShowGpXpColumn] = useLocalStorage<boolean>('afk-showGpXpColumn', false);
 
   const [activeTab, setActiveTab] = useState<'methods' | 'info'>('methods');
 
