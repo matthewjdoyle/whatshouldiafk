@@ -198,18 +198,40 @@ const EconomicsCell: React.FC<{ result: MethodResult }> = ({ result }) => {
             </div>
             {(() => {
               let volumeText = '';
-              if (result.method.id === 'merchant-shipwrecks') volumeText = '280 salvage sorted / hr';
-              else if (result.method.id === 'fremennik-shipwrecks') volumeText = '310 salvage sorted / hr';
-              else if (result.method.id === 'mercenary-shipwrecks') volumeText = '315 salvage sorted / hr';
-              else if (result.method.id === 'gemstone-crab') volumeText = '18 gem rolls / hr';
-              else if (result.method.id === 'infernal-eels') volumeText = '315 eels smashed / hr';
-              else if (result.method.id === 'motherlode-mine-upper') volumeText = '600 pay-dirts cleaned / hr';
-              else if (result.method.id.includes('plank-make')) volumeText = '960 planks made / hr';
+              let actionsPerHour = 0;
+              const isPlankMake = result.method.id.includes('plank-make');
+
+              if (result.method.id === 'merchant-shipwrecks') { volumeText = '280 salvage sorted / hr'; actionsPerHour = 280; }
+              else if (result.method.id === 'fremennik-shipwrecks') { volumeText = '310 salvage sorted / hr'; actionsPerHour = 310; }
+              else if (result.method.id === 'mercenary-shipwrecks') { volumeText = '315 salvage sorted / hr'; actionsPerHour = 315; }
+              else if (result.method.id === 'gemstone-crab') { volumeText = '18 gem rolls / hr'; actionsPerHour = 18; }
+              else if (result.method.id === 'infernal-eels') { volumeText = '315 eels smashed / hr'; actionsPerHour = 315; }
+              else if (result.method.id === 'motherlode-mine-upper') { volumeText = '600 pay-dirts cleaned / hr'; actionsPerHour = 600; }
+              else if (isPlankMake) { volumeText = '960 planks made / hr'; actionsPerHour = 960; }
               
               if (!volumeText) return null;
+
+              let extraInfo = null;
+              if (isPlankMake) {
+                const profitPerAction = Math.floor(result.profitPerHour / actionsPerHour);
+                extraInfo = (
+                  <div className="mt-1.5 font-medium text-main">
+                    Total profit / action: <span className={profitPerAction >= 0 ? "text-profit" : "text-loss"}>{profitPerAction >= 0 ? '+' : ''}{profitPerAction.toLocaleString()} gp</span>
+                  </div>
+                );
+              } else if (actionsPerHour > 0) {
+                const valuePerAction = Math.floor(result.revenuePerHour / actionsPerHour);
+                extraInfo = (
+                  <div className="mt-1.5 font-medium text-main">
+                    Average value / roll: <span className="text-profit">+{valuePerAction.toLocaleString()} gp</span>
+                  </div>
+                );
+              }
+
               return (
-                <div className="mt-2 pt-2 border-t border-main text-xs text-muted text-center">
-                  Estimated {volumeText}
+                <div className="mt-2 pt-2 border-t border-main text-xs text-muted text-center flex flex-col items-center">
+                  <div>Estimated {volumeText}</div>
+                  {extraInfo}
                 </div>
               );
             })()}

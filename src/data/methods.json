@@ -2,6 +2,7 @@
   {
     "id": "cannonballs",
     "name": "Cannonballs (Standard)",
+    "iconUrl": "https://static.runelite.net/cache/item/icon/4.png",
     "skill": "Smithing",
     "level": 35,
     "afk": {
@@ -33,6 +34,7 @@
   {
     "id": "cannonballs-double",
     "name": "Cannonballs (Double Ammo)",
+    "iconUrl": "https://static.runelite.net/cache/item/icon/27012.png",
     "skill": "Smithing",
     "level": 35,
     "afk": {
