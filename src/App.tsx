@@ -38,8 +38,7 @@ function App() {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const fetchData = async () => {
-    setLoading(true);
+  const fetchMappingData = async () => {
     try {
       let mappingRes: any;
       try {
@@ -60,8 +59,13 @@ function App() {
         };
       }
       setMapping(mappingItems);
+    } catch (e) {
+      console.error('Failed to fetch mapping:', e);
+    }
+  };
 
-      // prices
+  const fetchPricesData = async () => {
+    try {
       let pricesRes: any;
       try {
         pricesRes = await invoke('fetch_prices');
@@ -74,16 +78,21 @@ function App() {
       setPrices(latestPrices);
       setLastUpdated(new Date());
     } catch (e) {
-      console.error('Failed to fetch data:', e);
-    } finally {
-      setLoading(false);
+      console.error('Failed to fetch prices:', e);
     }
   };
 
+  const fetchInitialData = async () => {
+    setLoading(true);
+    await fetchMappingData();
+    await fetchPricesData();
+    setLoading(false);
+  };
+
   useEffect(() => {
-    fetchData();
-    // Refresh prices every minute
-    const interval = setInterval(fetchData, 60000);
+    fetchInitialData();
+    // Refresh prices every 5 minutes
+    const interval = setInterval(fetchPricesData, 300000);
     return () => clearInterval(interval);
   }, []);
 
@@ -139,7 +148,11 @@ function App() {
               {lastUpdated ? `Prices updated ${lastUpdated.toLocaleTimeString()}` : 'Loading...'}
             </span>
             <button 
-              onClick={fetchData}
+              onClick={async () => {
+                setLoading(true);
+                await fetchPricesData();
+                setLoading(false);
+              }}
               disabled={loading}
               className="p-2 bg-surface rounded hover:bg-surface-hover transition disabled:opacity-50 cursor-pointer text-main"
             >

@@ -10,7 +10,7 @@ struct AppState {
 async fn fetch_prices(state: State<'_, AppState>) -> Result<Value, String> {
     let res = state.client
         .get("https://prices.runescape.wiki/api/v1/osrs/latest")
-        .header("User-Agent", "osrs-afk-optimiser/1.0.0 (contact: github.com)")
+        .header("User-Agent", "osrs-afk-optimiser/1.0.0 (contact: github.com/matthewjdoyle)")
         .send()
         .await
         .map_err(|e| e.to_string())?;
@@ -23,7 +23,7 @@ async fn fetch_prices(state: State<'_, AppState>) -> Result<Value, String> {
 async fn fetch_mapping(state: State<'_, AppState>) -> Result<Value, String> {
     let res = state.client
         .get("https://prices.runescape.wiki/api/v1/osrs/mapping")
-        .header("User-Agent", "osrs-afk-optimiser/1.0.0 (contact: github.com)")
+        .header("User-Agent", "osrs-afk-optimiser/1.0.0 (contact: github.com/matthewjdoyle)")
         .send()
         .await
         .map_err(|e| e.to_string())?;
