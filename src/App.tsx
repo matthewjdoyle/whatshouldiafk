@@ -5,7 +5,14 @@ import type { Method, ItemPrice, ItemMapping, MethodResult } from './calculation
 import { calculateMethod } from './calculations/profit';
 import methodsData from './data/methods.json';
 import MethodTable from './components/MethodTable';
+import MethodGraph from './components/graph/MethodGraph';
 import { RefreshCcw, ChevronDown } from 'lucide-react';
+
+const tabs = [
+  { id: 'methods', label: 'Methods' },
+  { id: 'graph', label: 'Graph' },
+  { id: 'info', label: 'Info' },
+] as const;
 
 function App() {
   const [methods] = useState<Method[]>(methodsData as Method[]);
@@ -30,7 +37,7 @@ function App() {
   const [showGeLimitColumn, setShowGeLimitColumn] = useLocalStorage<boolean>('afk-showGeLimitColumn', false);
   const [showGpXpColumn, setShowGpXpColumn] = useLocalStorage<boolean>('afk-showGpXpColumn', false);
 
-  const [activeTab, setActiveTab] = useState<'methods' | 'info'>('methods');
+  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]['id']>('methods');
 
   const allSkills = Array.from(new Set(methods.map(m => m.skill))).sort();
 
@@ -66,15 +73,19 @@ function App() {
 
   const fetchPricesData = async () => {
     try {
-      let pricesRes: any;
+      let pricesRes: { data?: Record<string, ItemPrice> };
       try {
         pricesRes = await invoke('fetch_prices');
-      } catch (e) {
+      } catch {
         const res = await fetch('https://prices.runescape.wiki/api/v1/osrs/latest');
+        if (!res.ok) throw new Error(`Price request failed (${res.status})`);
         pricesRes = await res.json();
       }
       
-      const latestPrices = pricesRes.data;
+      const latestPrices = pricesRes?.data;
+      if (!latestPrices || typeof latestPrices !== 'object' || Array.isArray(latestPrices)) {
+        throw new Error('Price response is missing item data');
+      }
       setPrices(latestPrices);
       setLastUpdated(new Date());
     } catch (e) {
@@ -124,16 +135,17 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-app text-main p-8 w-full">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <header className="flex flex-col md:flex-row justify-between items-center pb-4 border-b border-sub">
+    <div className="min-h-screen bg-app text-main p-4 sm:p-8 w-full min-w-0">
+      <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6">
+        <header className="flex flex-col md:flex-row justify-between items-center gap-4 pb-4 border-b border-sub">
           <div>
             <h1 className="text-2xl font-bold text-accent">What should I AFK?</h1>
             <p className="text-muted text-sm mt-1">Compare OSRS AFK training methods using real-time GE profit margins.</p>
           </div>
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 md:shrink-0">
             <div className="relative flex items-center">
               <select
+                aria-label="Theme"
                 value={theme}
                 onChange={(e) => setTheme(e.target.value as 'dark' | 'light' | 'rsmode')}
                 className="appearance-none bg-input border border-main hover:border-sub focus:border-accent focus:ring-1 focus:ring-accent rounded py-1.5 pl-3 pr-8 text-sm outline-none text-main cursor-pointer transition-colors"
@@ -144,48 +156,70 @@ function App() {
               </select>
               <ChevronDown className="w-4 h-4 text-muted absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
-            <span className="text-sm text-muted">
-              {lastUpdated ? `Prices updated ${lastUpdated.toLocaleTimeString()}` : 'Loading...'}
-            </span>
-            <button 
-              onClick={async () => {
-                setLoading(true);
-                await fetchPricesData();
-                setLoading(false);
-              }}
-              disabled={loading}
-              className="p-2 bg-surface rounded hover:bg-surface-hover transition disabled:opacity-50 cursor-pointer text-main"
-            >
-              <RefreshCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            </button>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted sm:text-sm">
+                {lastUpdated ? `Prices updated ${lastUpdated.toLocaleTimeString()}` : loading ? 'Loading...' : 'Prices unavailable'}
+              </span>
+              <button
+                aria-label="Refresh GE prices"
+                onClick={async () => {
+                  setLoading(true);
+                  await fetchPricesData();
+                  setLoading(false);
+                }}
+                disabled={loading}
+                className="p-2 bg-surface rounded hover:bg-surface-hover transition disabled:opacity-50 cursor-pointer text-main"
+              >
+                <RefreshCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
           </div>
         </header>
 
-        <div className="flex space-x-6 border-b border-sub pb-2">
-          <button 
-            onClick={() => setActiveTab('methods')}
-            className={`font-medium pb-2 border-b-2 transition-colors cursor-pointer ${activeTab === 'methods' ? 'text-accent border-accent' : 'text-muted border-transparent hover:text-sub'}`}
-          >
-            Methods
-          </button>
-          <button 
-            onClick={() => setActiveTab('info')}
-            className={`font-medium pb-2 border-b-2 transition-colors cursor-pointer ${activeTab === 'info' ? 'text-accent border-accent' : 'text-muted border-transparent hover:text-sub'}`}
-          >
-            Info & FAQ
-          </button>
+        <div role="tablist" aria-label="AFK guide" className="flex gap-5 sm:gap-6 border-b border-sub pb-2">
+          {tabs.map(({ id, label }, index) => (
+            <button
+              key={id}
+              id={`${id}-tab`}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === id}
+              aria-controls={`${id}-panel`}
+              tabIndex={activeTab === id ? 0 : -1}
+              onClick={() => setActiveTab(id)}
+              onKeyDown={(event) => {
+                let nextIndex: number;
+                switch (event.key) {
+                  case 'ArrowLeft': nextIndex = (index + tabs.length - 1) % tabs.length; break;
+                  case 'ArrowRight': nextIndex = (index + 1) % tabs.length; break;
+                  case 'Home': nextIndex = 0; break;
+                  case 'End': nextIndex = tabs.length - 1; break;
+                  default: return;
+                }
+                event.preventDefault();
+                const next = tabs[nextIndex].id;
+                setActiveTab(next);
+                document.getElementById(`${next}-tab`)?.focus();
+              }}
+              className={`font-medium pb-2 border-b-2 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-accent ${activeTab === id ? 'text-accent border-accent' : 'text-muted border-transparent hover:text-sub'}`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
-        {activeTab === 'methods' ? (
-          <>
-            <section className="bg-surface p-4 rounded-lg flex flex-wrap gap-6 items-center z-10 relative">
+        {activeTab !== 'info' && (
+            <section aria-label="Method filters" className="bg-surface p-3 sm:p-4 rounded-lg grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-6 items-end sm:items-center z-10 relative">
               <div className="flex flex-col relative">
-                <label className="text-xs text-muted mb-1">Skill Filter</label>
+                <span id="skill-filter-label" className="text-xs text-muted mb-1">Skill Filter</span>
                 <button
+                  id="skill-filter"
+                  aria-labelledby="skill-filter-label skill-filter-value"
+                  aria-expanded={isSkillSelectorOpen}
                   onClick={() => setIsSkillSelectorOpen(!isSkillSelectorOpen)}
-                  className="bg-input border border-main hover:border-sub focus:border-accent focus:ring-1 focus:ring-accent rounded py-1.5 px-3 text-sm outline-none text-main cursor-pointer min-w-32 flex justify-between items-center transition-colors"
+                  className="bg-input border border-main hover:border-sub focus:border-accent focus:ring-1 focus:ring-accent rounded py-1.5 px-3 text-sm outline-none text-main cursor-pointer sm:min-w-32 flex justify-between items-center transition-colors"
                 >
-                  <span>{selectedSkills.length === 0 ? 'All Skills' : `${selectedSkills.length} selected`}</span>
+                  <span id="skill-filter-value">{selectedSkills.length === 0 ? 'All Skills' : `${selectedSkills.length} selected`}</span>
                   <ChevronDown className="w-4 h-4 text-muted ml-2" />
                 </button>
 
@@ -202,6 +236,7 @@ function App() {
                           return (
                             <button
                               key={skill}
+                              aria-pressed={isSelected}
                               onClick={() => {
                                 if (selectedSkills.length === 0) {
                                   setSelectedSkills([skill]);
@@ -242,12 +277,13 @@ function App() {
               </div>
 
               <div className="flex flex-col">
-                <label className="text-xs text-muted mb-1">AFK Time (seconds)</label>
+                <label htmlFor="min-afk" className="text-xs text-muted mb-1">AFK Time (seconds)</label>
                 <div className="relative flex items-center">
                   <select 
+                    id="min-afk"
                     value={minAfk} 
                     onChange={e => setMinAfk(Number(e.target.value))}
-                    className="appearance-none w-full bg-input border border-main hover:border-sub focus:border-accent focus:ring-1 focus:ring-accent rounded py-1.5 pl-3 pr-8 text-sm outline-none text-main cursor-pointer transition-colors"
+                    className="appearance-none w-full truncate bg-input border border-main hover:border-sub focus:border-accent focus:ring-1 focus:ring-accent rounded py-1.5 pl-3 pr-8 text-sm outline-none text-main cursor-pointer transition-colors"
                   >
                     <option value={0}>Any</option>
                     <option value={30}>≥ 30s (Semi-AFK)</option>
@@ -259,9 +295,10 @@ function App() {
               </div>
 
               <div className="flex flex-col">
-                <label className="text-xs text-muted mb-1">Minimum XP/hr</label>
+                <label htmlFor="min-xp" className="text-xs text-muted mb-1">Minimum XP/hr</label>
                 <div className="relative flex items-center">
                   <select 
+                    id="min-xp"
                     value={minXp} 
                     onChange={e => setMinXp(Number(e.target.value))}
                     className="appearance-none w-full bg-input border border-main hover:border-sub focus:border-accent focus:ring-1 focus:ring-accent rounded py-1.5 pl-3 pr-8 text-sm outline-none text-main cursor-pointer transition-colors"
@@ -275,7 +312,7 @@ function App() {
                 </div>
               </div>
 
-              <label className="flex items-center space-x-2 text-sm mt-4 cursor-pointer text-main">
+              <label className="flex items-center space-x-2 text-sm py-2 sm:py-0 sm:mt-4 cursor-pointer text-main">
                 <input 
                   type="checkbox" 
                   checked={profitableOnly}
@@ -285,7 +322,7 @@ function App() {
                 <span>Profitable only</span>
               </label>
 
-              <div className="flex flex-col border-l border-main pl-6 ml-auto">
+              {activeTab === 'methods' && <div className="col-span-2 flex flex-col sm:border-l border-main sm:pl-6 sm:ml-auto">
                 <label className="text-xs text-muted mb-1">Columns</label>
                 <div className="flex flex-wrap gap-4">
                   <label className="flex items-center space-x-1.5 text-sm cursor-pointer text-main">
@@ -325,10 +362,13 @@ function App() {
                     <span>GE Limit</span>
                   </label>
                 </div>
-              </div>
+              </div>}
             </section>
+        )}
 
-            <MethodTable 
+        <div id="methods-panel" role="tabpanel" aria-labelledby="methods-tab" hidden={activeTab !== 'methods'}>
+          {activeTab === 'methods' && (
+            <MethodTable
               results={filteredResults} 
               loading={loading && !lastUpdated} 
               showAfkColumn={showAfkColumn}
@@ -336,10 +376,17 @@ function App() {
               showGeLimitColumn={showGeLimitColumn}
               showGpXpColumn={showGpXpColumn}
             />
-          </>
-        ) : (
-          <div className="bg-surface p-8 rounded-lg text-sub space-y-6">
-            <h2 className="text-2xl font-bold text-main mb-4">Frequently Asked Questions</h2>
+          )}
+        </div>
+
+        <div id="graph-panel" role="tabpanel" aria-labelledby="graph-tab" hidden={activeTab !== 'graph'}>
+          {activeTab === 'graph' && (
+            <MethodGraph results={filteredResults} priceLoading={loading && !lastUpdated} profitableOnly={profitableOnly} />
+          )}
+        </div>
+
+        <div id="info-panel" role="tabpanel" aria-labelledby="info-tab" hidden={activeTab !== 'info'} className="bg-surface p-8 rounded-lg text-sub space-y-6">
+            <h2 className="text-2xl font-bold text-main mb-4">How does what should I AFK know what I should AFK?</h2>
             
             <div className="space-y-2">
               <h3 className="text-lg font-semibold text-accent">Why do the prices in this app differ from the official GE website?</h3>
@@ -347,10 +394,7 @@ function App() {
                 The official Jagex website shows the "GE Guide Price," which only updates once per day and is artificially restricted by Jagex so that it cannot change by more than 5% in a single day. Because of this limit, the official website often heavily lags behind an item's true street value.
               </p>
               <p>
-                This app uses the <strong>OSRS Wiki Prices API</strong>, which is powered by real-time crowdsourced data from RuneLite users. It tracks the exact GP amounts that items are actually being traded for right this second. It looks at the actual active high (insta-buy) and low (insta-sell) margins to give you a much more accurate estimate of true profit.
-              </p>
-              <p className="text-profit font-medium">
-                In short: The prices shown here are more accurate than the official Jagex website because they reflect live, real-world trading data!
+                This app uses the OSRS Wiki Prices API, which is powered by real-time crowdsourced data from RuneLite users. It tracks the exact GP amounts that items are actually being traded for right this second. It looks at the actual active high (insta-buy) and low (insta-sell) margins to give you a much more accurate estimate of true profit.
               </p>
             </div>
             
@@ -364,7 +408,7 @@ function App() {
             <div id="crab-profit" className="space-y-2 p-4 rounded-md">
               <h3 className="text-lg font-semibold text-accent">How is the Gemstone Crab profit calculated?</h3>
               <p>
-                The profit displayed for the Gemstone Crab is an <strong>average expected value per hour</strong>, calculated using the official drop rates from the OSRS Wiki.
+                The profit displayed for the Gemstone Crab is an average expected value per hour, calculated using the official drop rates from the OSRS Wiki.
               </p>
               <p>
                 A Gemstone Crab is mined exactly 3 times per kill by the top 16 damage dealers. Assuming a 10-minute AFK interval (6 crabs per hour), you get 18 gem rolls per hour. The drop rates are:
@@ -387,7 +431,7 @@ function App() {
             <div id="mlm-profit" className="space-y-2 p-4 rounded-md">
               <h3 className="text-lg font-semibold text-accent">How is the Motherlode Mine profit calculated?</h3>
               <p>
-                The profit displayed for Motherlode Mine is an <strong>average expected value per hour</strong>, calculated based on the ore distribution for a player with roughly Level 85 Mining.
+                The profit displayed for Motherlode Mine is an average expected value per hour, calculated based on the ore distribution for a player with roughly Level 85 Mining.
               </p>
               <p>
                 At this level, you can expect to mine and clean roughly 600 pay-dirt per hour. The average expected yield per hour (and their respective probabilities) is:
@@ -405,7 +449,7 @@ function App() {
             <div id="eel-profit" className="space-y-2 p-4 rounded-md">
               <h3 className="text-lg font-semibold text-accent">How is the Infernal Eel profit calculated?</h3>
               <p>
-                The profit displayed for Infernal Eels is an <strong>average expected value per hour</strong> based on the loot table from smashing them with a hammer.
+                The profit displayed for Infernal Eels is an average expected value per hour based on the loot table from smashing them with a hammer.
               </p>
               <p>
                 At Level 80 Fishing, you catch roughly 315 eels per hour. Smashing them rolls on a loot table that yields:
@@ -420,7 +464,7 @@ function App() {
             <div id="salvage-profit" className="space-y-2 p-4 rounded-md">
               <h3 className="text-lg font-semibold text-accent">How is the Shipwreck Salvage profit calculated?</h3>
               <p>
-                The profit displayed for Sailing shipwrecks (Mercenary, Fremennik, and Merchant) is an <strong>average expected value per hour</strong> based on the loot tables from sorting the salvage.
+                The profit displayed for Sailing shipwrecks (Mercenary, Fremennik, and Merchant) is an average expected value per hour based on the loot tables from sorting the salvage.
               </p>
               <p>
                 Because the raw salvage itself (Opulent, Fremennik, Martial) is untradeable, we multiply the OSRS Wiki's estimated salvage catches per hour by the drop rate of every tradeable item in the sorting loot table. We then fetch live GE prices for all of these constituent items to give you a highly accurate, dynamic profit estimation. 
@@ -430,7 +474,7 @@ function App() {
             <div id="plank-make-profit" className="space-y-2 p-4 rounded-md">
               <h3 className="text-lg font-semibold text-accent">How is the Plank Make profit calculated?</h3>
               <p>
-                The profit displayed for Plank Make methods is an <strong>average expected value per hour</strong>, calculated by simulating 960 casts per hour (typical for auto-casting).
+                The profit displayed for Plank Make methods is an average expected value per hour, calculated by simulating 960 casts per hour (typical for auto-casting).
               </p>
               <p>
                 We deduct the live GE cost of inputs, as well as the exact coin fee required to cast the spell on each specific log type, to give you a highly accurate, dynamic profit estimation.
@@ -442,8 +486,7 @@ function App() {
                 Created by Matthew Doyle. Check out my website at <a href="https://www.matthewd0yle.com" target="_blank" rel="noreferrer" className="text-accent hover:underline font-medium">www.matthewd0yle.com</a>
               </p>
             </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import type { MethodResult } from '../calculations/profit';
 import { formatGp } from '../calculations/profit';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { formatAfk, getMethodIconUrl } from './methodPresentation';
 
 const EconomicsCell: React.FC<{ result: MethodResult }> = ({ result }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -302,15 +303,6 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
     return sortDesc ? bVal - aVal : aVal - bVal;
   });
 
-  const formatAfk = (seconds: number) => {
-    if (seconds >= 60) {
-      const m = Math.floor(seconds / 60);
-      const s = seconds % 60;
-      return s > 0 ? `${m}m ${s}s` : `${m}m`;
-    }
-    return `${seconds}s`;
-  };
-
   const renderSortIcon = (field: typeof sortField) => {
     if (sortField !== field) return null;
     return sortDesc ? <ArrowUp className="w-3 h-3 inline ml-1" /> : <ArrowDown className="w-3 h-3 inline ml-1" />;
@@ -373,15 +365,15 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
               sortedResults.map((result) => {
                 const { method, profitPerHour } = result;
                 const isProfitable = profitPerHour > 0;
-                const iconItemId = method.outputs.length > 0 ? method.outputs[0].id : (method.inputs.length > 0 ? method.inputs[0].id : null);
+                const iconUrl = getMethodIconUrl(method);
 
                 return (
                   <tr key={method.id} className="hover:bg-surface-hover/50 transition">
                     <td className="p-4">
                       <div className="flex items-center space-x-3">
-                        {(method.iconUrl || iconItemId) && (
+                        {iconUrl && (
                           <img 
-                            src={method.iconUrl || `https://static.runelite.net/cache/item/icon/${iconItemId}.png`} 
+                            src={iconUrl}
                             alt=""
                             className="w-8 h-8 object-contain"
                           />
