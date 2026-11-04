@@ -65,6 +65,38 @@
     ]
   },
   {
+    "id": "steel-dart-tips",
+    "name": "Steel dart tips",
+    "skill": "Smithing",
+    "level": 34,
+    "afk": {
+      "typicalSeconds": 81,
+      "interactionsPerHour": 39,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 39750
+    },
+    "inputs": [
+      {
+        "name": "Steel bar",
+        "id": 2353,
+        "amountPerHour": 1060
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Steel dart tip",
+        "id": 821,
+        "amountPerHour": 10600
+      }
+    ],
+    "requirements": [
+      "The Tourist Trap",
+      "Hammer and bank-adjacent anvil"
+    ]
+  },
+  {
     "id": "mithril-dart-tips",
     "name": "Mithril dart tips",
     "skill": "Smithing",
@@ -1015,6 +1047,37 @@
     ]
   },
   {
+    "id": "cooking-anglerfish",
+    "name": "Cooking Anglerfish",
+    "skill": "Cooking",
+    "level": 84,
+    "afk": {
+      "typicalSeconds": 67,
+      "interactionsPerHour": 46,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 299000
+    },
+    "inputs": [
+      {
+        "name": "Raw anglerfish",
+        "id": 13439,
+        "amountPerHour": 1300
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Anglerfish",
+        "id": 13441,
+        "amountPerHour": 1300
+      }
+    ],
+    "requirements": [
+      "Rates assume no burns (Cooking cape or 93 Cooking with cooking gauntlets at Hosidius Kitchen)"
+    ]
+  },
+  {
     "id": "cooking-manta-rays",
     "name": "Cooking Manta Rays",
     "skill": "Cooking",
@@ -1043,6 +1106,32 @@
     ],
     "requirements": [
       "Cooking gauntlets (recommended)"
+    ]
+  },
+  {
+    "id": "maple-log-campfire",
+    "name": "Maple-log Campfire",
+    "skill": "Firemaking",
+    "level": 45,
+    "afk": {
+      "typicalSeconds": 150,
+      "interactionsPerHour": 24,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 89775
+    },
+    "inputs": [
+      {
+        "name": "Maple logs",
+        "id": 1517,
+        "amountPerHour": 665
+      }
+    ],
+    "outputs": [],
+    "requirements": [
+      "F2P",
+      "Forester's campfire beside a bank"
     ]
   },
   {
@@ -1456,6 +1545,43 @@
     ],
     "requirements": [
       "Chisel"
+    ]
+  },
+  {
+    "id": "unstrung-ruby-amulets",
+    "name": "Unstrung Ruby Amulets",
+    "skill": "Crafting",
+    "level": 50,
+    "afk": {
+      "typicalSeconds": 40,
+      "interactionsPerHour": 92,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 102000
+    },
+    "inputs": [
+      {
+        "name": "Gold bar",
+        "id": 2357,
+        "amountPerHour": 1200
+      },
+      {
+        "name": "Ruby",
+        "id": 1603,
+        "amountPerHour": 1200
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Ruby amulet (u)",
+        "id": 1679,
+        "amountPerHour": 1200
+      }
+    ],
+    "requirements": [
+      "F2P",
+      "Amulet mould and Edgeville furnace"
     ]
   },
   {
