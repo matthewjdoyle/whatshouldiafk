@@ -405,6 +405,30 @@ function App() {
               </p>
             </div>
 
+            <div className="space-y-2 p-4 rounded-md">
+              <h3 className="text-lg font-semibold text-accent">What setups do the new processing methods assume?</h3>
+              <p>
+                Seeking Dragon Arrows (Engorged Tree) includes gathering untradeable sap and processing it into saleable arrows.
+                We use the <a href="https://oldschool.runescape.wiki/w/Money_making_guide/Chopping_the_engorged_bloodwood_tree" target="_blank" rel="noreferrer" className="text-accent hover:underline">Wiki's full-chain estimate</a> of
+                16 buckets per hour: 16 redwood logs, 1,680 feathers and 1,680 dragon arrows become 1,680 seeking dragon arrows.
+                The listed 47,520 XP/hr is Woodcutting XP; processing also gives about 2,240 Fletching XP/hr.
+                With a dragon axe, chopping offers about 118 uninterrupted seconds, followed by a separate 45-second draining step.
+                Release any letvek in a bucket before chopping again. The 128 actions/hr estimate allows for gathering, processing and banking.
+              </p>
+              <p>
+                Moonlight Antler Bolts assumes 1,800 antlers per hour with banking, producing 21,600 bolts and 21,780 Fletching XP.
+                A batch of 27 antlers takes about 49 seconds, with roughly 67 batches per hour.
+                See the <a href="https://oldschool.runescape.wiki/w/Money_making_guide/Fletching_moonlight_antler_bolts" target="_blank" rel="noreferrer" className="text-accent hover:underline">Wiki method guide</a>.
+              </p>
+              <p>
+                Auto-crushing Lava Scales assumes 99 Herblore and the hard Wilderness Diary, averaging about 8.961 shards per scale.
+                At an estimated 1,800 scales per hour including banking, this produces about 16,129.8 shards and no XP.
+                The 47-second AFK window is for auto-crushing a batch of 27 scales; manually crushing is more intensive.
+                Lower Herblore levels or no diary reduce the yield, so the displayed profit does not apply to those setups.
+                See the <a href="https://oldschool.runescape.wiki/w/Lava_scale_shard" target="_blank" rel="noreferrer" className="text-accent hover:underline">Wiki yield table</a>.
+              </p>
+            </div>
+
             <div id="crab-profit" className="space-y-2 p-4 rounded-md">
               <h3 className="text-lg font-semibold text-accent">How is the Gemstone Crab profit calculated?</h3>
               <p>

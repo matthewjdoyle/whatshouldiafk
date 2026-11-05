@@ -311,9 +311,9 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
   const visibleColumnsCount = 4 + (showAfkColumn ? 1 : 0) + (showEconomicsColumn ? 1 : 0) + (showGeLimitColumn ? 1 : 0) + (showGpXpColumn ? 1 : 0);
 
   return (
-    <div className="bg-surface rounded-lg overflow-hidden border border-main">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm whitespace-nowrap">
+    <div className="max-w-full bg-surface rounded-lg overflow-hidden border border-main">
+      <div className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-accent" role="region" aria-label="AFK methods table" tabIndex={0}>
+        <table className="w-full text-left text-sm whitespace-nowrap [&_th]:px-3 [&_td]:px-3">
           <thead className="bg-app text-muted border-b border-main">
             <tr>
               <th className="p-4 font-medium cursor-pointer hover:text-accent" onClick={() => handleSort('method')}>
@@ -369,16 +369,16 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
 
                 return (
                   <tr key={method.id} className="hover:bg-surface-hover/50 transition">
-                    <td className="p-4">
-                      <div className="flex items-center space-x-3">
+                    <td className="p-4 whitespace-normal">
+                      <div className="flex items-center gap-3">
                         {iconUrl && (
                           <img 
                             src={iconUrl}
                             alt=""
-                            className="w-8 h-8 object-contain"
+                            className="w-8 h-8 shrink-0 object-contain"
                           />
                         )}
-                        <div>
+                        <div className="w-48 min-w-0 [overflow-wrap:anywhere]">
                           <div className="font-medium text-main">{method.name}</div>
                           <div className="text-xs text-muted mt-0.5">{method.requirements.join(', ')}</div>
                         </div>

@@ -275,7 +275,8 @@
       }
     ],
     "requirements": [
-      "100% Piscarilius favour"
+      "Fishing rod",
+      "sandworms"
     ]
   },
   {
@@ -2047,6 +2048,112 @@
     "requirements": [
       "79 Sailing",
       "Drumstick Isle"
+    ]
+  },
+  {
+    "id": "seeking-dragon-arrows-engorged",
+    "name": "Seeking Dragon Arrows (Engorged Tree)",
+    "skill": "Woodcutting",
+    "level": 77,
+    "afk": {
+      "typicalSeconds": 118,
+      "interactionsPerHour": 128,
+      "bankingComplexity": "Medium"
+    },
+    "xp": {
+      "perHour": 47520
+    },
+    "inputs": [
+      {
+        "name": "Redwood logs",
+        "id": 19669,
+        "amountPerHour": 16
+      },
+      {
+        "name": "Feather",
+        "id": 314,
+        "amountPerHour": 1680
+      },
+      {
+        "name": "Dragon arrow",
+        "id": 11212,
+        "amountPerHour": 1680
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Seeking dragon arrow",
+        "id": 33595,
+        "amountPerHour": 1680
+      }
+    ],
+    "requirements": [
+      "The Blood Moon Rises",
+      "90 Fletching",
+      "Dragon axe, bucket, knife"
+    ]
+  },
+  {
+    "id": "moonlight-antler-bolts",
+    "name": "Moonlight Antler Bolts",
+    "skill": "Fletching",
+    "level": 72,
+    "afk": {
+      "typicalSeconds": 49,
+      "interactionsPerHour": 67,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 21780
+    },
+    "inputs": [
+      {
+        "name": "Moonlight antelope antler",
+        "id": 29171,
+        "amountPerHour": 1800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Moonlight antler bolts",
+        "id": 28878,
+        "amountPerHour": 21600
+      }
+    ],
+    "requirements": [
+      "Chisel"
+    ]
+  },
+  {
+    "id": "auto-crushing-lava-scales",
+    "name": "Auto-crushing Lava Scales",
+    "skill": "Herblore",
+    "level": 99,
+    "afk": {
+      "typicalSeconds": 47,
+      "interactionsPerHour": 67,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 0
+    },
+    "inputs": [
+      {
+        "name": "Lava scale",
+        "id": 11992,
+        "amountPerHour": 1800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Lava scale shard",
+        "id": 11994,
+        "amountPerHour": 16129.8
+      }
+    ],
+    "requirements": [
+      "Hard Wilderness Diary",
+      "Pestle and mortar"
     ]
   }
 ]
