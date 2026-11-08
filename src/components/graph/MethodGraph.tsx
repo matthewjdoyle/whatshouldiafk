@@ -194,19 +194,21 @@ export default function MethodGraph({ results, priceLoading, emptyResultsMessage
           {!waitingForPrices && <>{points.length} {points.length === 1 ? 'method' : 'methods'} plotted</>}
         </p>
         {!waitingForPrices && points.length > 0 && <p>Select {scatter ? 'a marker' : 'a bar'} for method details.</p>}
-        {!waitingForPrices && points.length > 0 && (scatter || usesPrices || logX || logY) && (
+        {!waitingForPrices && points.length > 0 && (
           <div className="flex w-full flex-wrap gap-x-4 gap-y-1">
-            {(scatter || usesPrices) && (
-              <>
-                <span className="inline-flex items-center gap-1.5">
-                  <span aria-hidden="true" className={scatter ? 'size-3 rounded-full border-2 border-profit' : 'h-2 w-3 rounded-xs bg-profit'} />
-                  Profitable
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span aria-hidden="true" className={scatter ? 'size-3 rounded-full border-2 border-loss' : 'h-2 w-3 rounded-xs bg-loss'} />
-                  Loss-making
-                </span>
-              </>
+            <span className="inline-flex items-center gap-1.5">
+              <span aria-hidden="true" className={scatter ? 'size-3 rounded-full border-2 border-profit' : 'h-2 w-3 rounded-xs bg-profit'} />
+              Profitable
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span aria-hidden="true" className={scatter ? 'size-3 rounded-full border-2 border-loss' : 'h-2 w-3 rounded-xs bg-loss'} />
+              {scatter ? 'Loss-making' : 'Not profitable'}
+            </span>
+            {!scatter && points.some(({ result, profitStatus }) => profitStatus === null && result.profitPerHour !== 0) && (
+              <span className="inline-flex items-center gap-1.5">
+                <span aria-hidden="true" className="h-2 w-3 rounded-xs bg-muted" />
+                Profit unavailable
+              </span>
             )}
             {(logX || logY) && (
               <p>Log axes show magnitude.{!scatter && ` Bars start at the ${horizontalBars ? 'left' : 'lower'} axis bound.`}</p>

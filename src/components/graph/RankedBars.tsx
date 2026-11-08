@@ -117,12 +117,12 @@ export default function RankedBars({ points, metricId, logarithmic, orientation,
               );
             })}
             <path d={`M ${left} ${top} V ${bottom} H ${right}`} className="fill-none stroke-border-main" />
-            {bars.map(({ result: { method }, x, center, end, profitStatus }) => {
+            {bars.map(({ result: { method, profitPerHour }, x, center, end, profitStatus }) => {
               const start = Math.min(baseline, end);
               const length = Math.abs(end - baseline);
-              const color = metric.usesPrices && profitStatus
-                ? (profitStatus === 'profit' ? 'fill-profit' : 'fill-loss')
-                : 'fill-accent';
+              const color = profitStatus === 'profit' ? 'text-profit'
+                : profitStatus === 'loss' || profitPerHour === 0 ? 'text-loss'
+                : 'text-muted';
               return x === 0 ? (
                 <line
                   key={method.id}
@@ -130,7 +130,7 @@ export default function RankedBars({ points, metricId, logarithmic, orientation,
                   x2={horizontal ? baseline : center + thickness / 2}
                   y1={horizontal ? center - thickness / 2 : baseline}
                   y2={horizontal ? center + thickness / 2 : baseline}
-                  className="stroke-accent"
+                  className={`stroke-current ${color}`}
                   strokeWidth={activeId === method.id ? 4 : 2}
                 />
               ) : (
@@ -142,13 +142,14 @@ export default function RankedBars({ points, metricId, logarithmic, orientation,
                   height={horizontal ? thickness : length}
                   rx={Math.min(3, thickness / 4)}
                   opacity={activeId === method.id ? 1 : 0.8}
-                  className={color}
+                  className={`fill-current ${color}`}
                 />
               );
             })}
           </svg>
-          {bars.map(({ result: { method }, x, center, profitStatus }, index) => {
-            const status = profitStatus === 'profit' ? 'Profitable' : profitStatus === 'loss' ? 'Loss-making' : '';
+          {bars.map(({ result: { method, profitPerHour }, x, center, profitStatus }, index) => {
+            const status = profitStatus === 'profit' ? 'Profitable' : profitStatus === 'loss' ? 'Loss-making'
+              : profitPerHour === 0 ? 'Breaks even' : 'Profit unavailable';
             const labelWidth = Math.min(maxLabelWidth, (center - 10) / Math.SQRT1_2);
             return (
               <button
