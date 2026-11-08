@@ -8,6 +8,8 @@
     "tauri": "tauri",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "test": "node --disable-warning=ExperimentalWarning --experimental-strip-types --test tests/marketData.test.mjs tests/economics.test.mjs",
+    "test:browser": "node test.mjs",
     "preview": "vite preview",
     "generate-previews": "node scripts/generate-previews.mjs",
     "prepare": "husky"

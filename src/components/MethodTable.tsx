@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { MethodResult } from '../calculations/profit';
-import { formatGp } from '../calculations/profit';
+import { formatGp, getGpPerXp } from '../calculations/profit';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { formatAfk, getMethodIconUrl } from './methodPresentation';
@@ -60,7 +60,7 @@ const EconomicsCell: React.FC<{ result: MethodResult }> = ({ result }) => {
             if (ratio > 1 && Math.abs(ratio - Math.round(ratio)) < 0.01) {
               const roundedRatio = Math.round(ratio);
               prefix = `${roundedRatio}x `;
-              displayPrice = ip.price * roundedRatio;
+              if (displayPrice !== null) displayPrice *= roundedRatio;
             }
           }
 
@@ -74,7 +74,7 @@ const EconomicsCell: React.FC<{ result: MethodResult }> = ({ result }) => {
                   try {
                     const { open } = await import('@tauri-apps/plugin-shell');
                     await open(url);
-                  } catch (err) {
+                  } catch {
                     window.open(url, '_blank', 'noopener,noreferrer');
                   }
                 }}
@@ -83,7 +83,7 @@ const EconomicsCell: React.FC<{ result: MethodResult }> = ({ result }) => {
                 {prefix}{ip.name}
               </button>
               <span className="text-muted whitespace-nowrap">
-                {displayPrice.toLocaleString()} gp
+                {displayPrice === null ? 'Unavailable' : `${displayPrice.toLocaleString()} gp`}
               </span>
             </div>
           );
@@ -179,9 +179,12 @@ const EconomicsCell: React.FC<{ result: MethodResult }> = ({ result }) => {
                   }
                 }
 
-                let valStr = ip.price.toLocaleString();
-                if (result.method.id.includes('plank-make')) {
-                  valStr = `${(ip.amountPerHour / 960).toLocaleString()} x ${ip.price.toLocaleString()} gp`;
+                let valStr = 'Unavailable';
+                if (ip.price !== null) {
+                  valStr = ip.price.toLocaleString();
+                  if (result.method.id.includes('plank-make')) {
+                    valStr = `${(ip.amountPerHour / 960).toLocaleString()} x ${valStr} gp`;
+                  }
                 }
 
                 return (
@@ -212,27 +215,19 @@ const EconomicsCell: React.FC<{ result: MethodResult }> = ({ result }) => {
               
               if (!volumeText) return null;
 
-              let extraInfo = null;
-              if (isPlankMake) {
-                const profitPerAction = Math.floor(result.profitPerHour / actionsPerHour);
-                extraInfo = (
-                  <div className="mt-1.5 font-medium text-main">
-                    Total profit / action: <span className={profitPerAction >= 0 ? "text-profit" : "text-loss"}>{profitPerAction >= 0 ? '+' : ''}{profitPerAction.toLocaleString()} gp</span>
-                  </div>
-                );
-              } else if (actionsPerHour > 0) {
-                const valuePerAction = Math.floor(result.revenuePerHour / actionsPerHour);
-                extraInfo = (
-                  <div className="mt-1.5 font-medium text-main">
-                    Average value / roll: <span className="text-profit">+{valuePerAction.toLocaleString()} gp</span>
-                  </div>
-                );
-              }
+              const hourlyValue = isPlankMake ? result.profitPerHour : result.revenuePerHour;
+              const perAction = hourlyValue === null ? null : Math.floor(hourlyValue / actionsPerHour);
+              const valueColor = perAction === null ? 'text-muted' : perAction < 0 ? 'text-loss' : 'text-profit';
 
               return (
                 <div className="mt-2 pt-2 border-t border-main text-xs text-muted text-center flex flex-col items-center">
                   <div>Estimated {volumeText}</div>
-                  {extraInfo}
+                  <div className="mt-1.5 font-medium text-main">
+                    {isPlankMake ? 'Total profit / action: ' : 'Average value / roll: '}
+                    <span className={valueColor}>
+                      {perAction === null ? 'Unavailable' : `${perAction >= 0 ? '+' : ''}${perAction.toLocaleString()} gp`}
+                    </span>
+                  </div>
                 </div>
               );
             })()}
@@ -246,14 +241,14 @@ const EconomicsCell: React.FC<{ result: MethodResult }> = ({ result }) => {
 
 interface Props {
   results: MethodResult[];
-  loading: boolean;
+  emptyResultsMessage: string;
   showAfkColumn?: boolean;
   showEconomicsColumn?: boolean;
   showGeLimitColumn?: boolean;
   showGpXpColumn?: boolean;
 }
 
-const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, showEconomicsColumn = true, showGeLimitColumn = true, showGpXpColumn = true }) => {
+const MethodTable: React.FC<Props> = ({ results, emptyResultsMessage, showAfkColumn = true, showEconomicsColumn = true, showGeLimitColumn = true, showGpXpColumn = true }) => {
   const [sortField, setSortField] = useLocalStorage<'profit' | 'xp' | 'afk' | 'sustain' | 'gpxp' | 'method' | 'skill'>('afk-sortField', 'profit');
   const [sortDesc, setSortDesc] = useLocalStorage<boolean>('afk-sortDesc', true);
 
@@ -276,8 +271,8 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
       return sortDesc ? cmp : -cmp;
     }
 
-    let aVal = 0;
-    let bVal = 0;
+    let aVal: number | null = 0;
+    let bVal: number | null = 0;
     switch (sortField) {
       case 'profit':
         aVal = a.profitPerHour;
@@ -288,8 +283,8 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
         bVal = b.method.xp.perHour;
         break;
       case 'gpxp':
-        aVal = a.method.xp.perHour > 0 ? a.profitPerHour / a.method.xp.perHour : (a.profitPerHour > 0 ? 999999 : -999999);
-        bVal = b.method.xp.perHour > 0 ? b.profitPerHour / b.method.xp.perHour : (b.profitPerHour > 0 ? 999999 : -999999);
+        aVal = getGpPerXp(a);
+        bVal = getGpPerXp(b);
         break;
       case 'afk':
         aVal = a.method.afk.typicalSeconds;
@@ -300,6 +295,8 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
         bVal = b.inputVolumeSustain ?? 99999;
         break;
     }
+    if (aVal === null) return bVal === null ? 0 : 1;
+    if (bVal === null) return -1;
     return sortDesc ? bVal - aVal : aVal - bVal;
   });
 
@@ -349,22 +346,17 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
             </tr>
           </thead>
           <tbody className="divide-y divide-main">
-            {loading ? (
-              <tr>
-                <td colSpan={visibleColumnsCount} className="p-8 text-center text-muted animate-pulse">
-                  Loading latest GE prices...
-                </td>
-              </tr>
-            ) : sortedResults.length === 0 ? (
+            {sortedResults.length === 0 ? (
               <tr>
                 <td colSpan={visibleColumnsCount} className="p-8 text-center text-muted">
-                  No methods match your filters.
+                  {emptyResultsMessage}
                 </td>
               </tr>
             ) : (
               sortedResults.map((result) => {
                 const { method, profitPerHour } = result;
-                const isProfitable = profitPerHour > 0;
+                const gpPerXp = getGpPerXp(result);
+                const profitColor = profitPerHour === null ? 'text-muted' : profitPerHour === 0 ? 'text-main' : profitPerHour > 0 ? 'text-profit' : 'text-loss';
                 const iconUrl = getMethodIconUrl(method);
 
                 return (
@@ -404,14 +396,12 @@ const MethodTable: React.FC<Props> = ({ results, loading, showAfkColumn = true, 
                     <td className="p-4 text-main">
                       {method.xp.perHour > 0 ? (method.xp.perHour / 1000).toFixed(1) + 'k' : '-'}
                     </td>
-                    <td className={`p-4 font-medium ${isProfitable ? 'text-profit' : 'text-loss'}`}>
-                      {formatGp(profitPerHour)}
+                    <td className={`p-4 font-medium ${profitColor}`}>
+                      {profitPerHour === null ? 'Unavailable' : formatGp(profitPerHour)}
                     </td>
                     {showGpXpColumn && (
-                      <td className={`p-4 font-medium ${isProfitable ? 'text-profit' : 'text-loss'}`}>
-                        {method.xp.perHour > 0 ? (
-                          <span>{(profitPerHour / method.xp.perHour) > 0 ? '+' : ''}{(profitPerHour / method.xp.perHour).toFixed(2)}</span>
-                        ) : '-'}
+                      <td className={`p-4 font-medium ${gpPerXp === null ? 'text-muted' : profitColor}`}>
+                        {method.xp.perHour <= 0 ? '-' : gpPerXp === null ? 'Unavailable' : `${gpPerXp > 0 ? '+' : ''}${gpPerXp.toFixed(2)}`}
                       </td>
                     )}
                     {showEconomicsColumn && (

@@ -11,7 +11,7 @@ import MethodDetails from './MethodDetails';
 interface Props {
   results: MethodResult[];
   priceLoading: boolean;
-  profitableOnly: boolean;
+  emptyResultsMessage: string;
 }
 
 function AxisControl({ label, scaleAxis = label, value, onChange, logarithmic, onScaleChange }: {
@@ -65,7 +65,7 @@ const segmentButton = 'inline-flex min-h-8 cursor-pointer items-center gap-1.5 r
 const selectedSegment = 'bg-surface-hover text-accent';
 const unselectedSegment = 'text-sub hover:bg-surface-hover hover:text-main';
 
-export default function MethodGraph({ results, priceLoading, profitableOnly }: Props) {
+export default function MethodGraph({ results, priceLoading, emptyResultsMessage }: Props) {
   const [stored, setStored] = useLocalStorage<GraphSettings>('afk-graph', defaultSettings);
   const settings = readGraphSettings(stored);
   const [openedIds, setOpenedIds] = useState<string[] | null>(null);
@@ -79,7 +79,6 @@ export default function MethodGraph({ results, priceLoading, profitableOnly }: P
   const logX = scatter ? settings.logX : settings.logBar;
   const logY = scatter && settings.logY;
   const usesPrices = getMetric(xMetric).usesPrices || (scatter && getMetric(yMetric).usesPrices);
-  const waitingForPrices = priceLoading && (usesPrices || profitableOnly);
   const points: GraphPoint[] = [];
   const omitted: { method: MethodResult['method']; reasons: string[] }[] = [];
   for (const result of results) {
@@ -92,6 +91,8 @@ export default function MethodGraph({ results, priceLoading, profitableOnly }: P
       omitted.push({ method: result.method, reasons });
     }
   }
+  const waitingForPrices = priceLoading && usesPrices && points.length === 0
+    && results.some(result => result.profitPerHour === null);
   const openedResults = openedIds?.flatMap(id => {
     const result = results.find(row => row.method.id === id);
     return result ? [result] : [];
@@ -172,7 +173,7 @@ export default function MethodGraph({ results, priceLoading, profitableOnly }: P
         {waitingForPrices ? (
           <p role="status" className="p-10 text-center text-sm text-sub">Loading latest GE prices…</p>
         ) : results.length === 0 ? (
-          <p role="status" className="p-10 text-center text-sm text-sub">No methods match your filters.</p>
+          <p role="status" className="p-10 text-center text-sm text-sub">{emptyResultsMessage}</p>
         ) : points.length === 0 ? (
           <p role="status" className="p-10 text-center text-sm text-sub">No methods can be plotted with these axis settings. Expand the omitted methods below for details.</p>
         ) : scatter ? (

@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { ChevronLeft, X } from 'lucide-react';
 import type { MethodResult } from '../../calculations/profit';
 import { formatAfk } from '../methodPresentation';
-import { formatNumber, getMetric, getMetricValue, getProfitStatus, hasPrices } from './graphData';
+import { formatNumber, getMetric, getMetricValue, getProfitStatus } from './graphData';
 import GraphIcon from './GraphIcon';
 
 interface Props {
@@ -11,10 +11,8 @@ interface Props {
 }
 
 function MethodStats({ result }: { result: MethodResult }) {
-  const { method } = result;
+  const { method, costPerHour: cost, revenuePerHour: revenue } = result;
   const profit = getMetricValue(result, 'profit');
-  const cost = hasPrices(result, true) ? result.costPerHour : null;
-  const revenue = hasPrices(result, false) ? result.revenuePerHour : null;
   const rates = [
     ['XP/hr', formatNumber(method.xp.perHour)],
     ['Typical AFK time', formatAfk(method.afk.typicalSeconds)],

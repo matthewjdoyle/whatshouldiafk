@@ -37,7 +37,7 @@ For adding new AFK methods or new features.
 
 Before running or building this app, ensure you have the following installed:
 
-- [Node.js](https://nodejs.org/) (v18+)
+- [Node.js](https://nodejs.org/) (v22.12+)
 - [Rust](https://rustup.rs/) (v1.70+)
 
 ### Installation & Setup
@@ -59,6 +59,10 @@ npx tauri dev
 ```
 
 *(This will launch the desktop application wrapper and start the Vite frontend server.)*
+
+### Verification
+
+Run `npm test`, `npm run lint`, and `npm run build` before shipping changes. Run `npm run test:browser` after the build to smoke-test the table, graph, and Info tab in Chromium with stubbed GE responses. The [state machine inventory](docs/state-machines.md) maps the workflows and their owners.
 
 ### Building for Production
 

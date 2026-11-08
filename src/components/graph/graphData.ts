@@ -1,15 +1,6 @@
 import type { MethodResult } from '../../calculations/profit';
-import { formatAfk } from '../methodPresentation';
-
-function isMissingPrice(item: MethodResult['itemPrices'][number]): boolean {
-  return item.amountPerHour !== 0 && (!Number.isFinite(item.price) || item.price <= 0);
-}
-
-export function hasPrices(result: MethodResult, isInput?: boolean): boolean {
-  return !result.itemPrices.some(item =>
-    (isInput === undefined || item.isInput === isInput) && isMissingPrice(item),
-  );
-}
+import { getGpPerXp, isMissingPrice } from '../../calculations/profit.ts';
+import { formatAfk } from '../methodPresentation.ts';
 
 export const formatNumber = new Intl.NumberFormat('en', { maximumFractionDigits: 2 }).format;
 const formatSigned = new Intl.NumberFormat('en', {
@@ -56,7 +47,7 @@ export const metrics = {
   gpXp: {
     label: 'Net GP/XP',
     usesPrices: true,
-    value: result => result.method.xp.perHour > 0 ? result.profitPerHour / result.method.xp.perHour : null,
+    value: getGpPerXp,
     format: value => `${formatSigned(value)} GP/XP`,
   },
 } satisfies Record<string, Metric>;
@@ -69,9 +60,7 @@ export function getMetric(id: MetricId): Metric {
 }
 
 export function getMetricValue(result: MethodResult, id: MetricId): number | null {
-  const metric = getMetric(id);
-  if (metric.usesPrices && !hasPrices(result)) return null;
-  const value = metric.value(result);
+  const value = getMetric(id).value(result);
   return value !== null && Number.isFinite(value) ? value : null;
 }
 

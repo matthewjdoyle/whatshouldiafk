@@ -1,6 +1,7 @@
 use reqwest::Client;
 use tauri::{State, Manager};
 use serde_json::Value;
+use std::time::Duration;
 
 struct AppState {
     client: Client,
@@ -11,8 +12,10 @@ async fn fetch_prices(state: State<'_, AppState>) -> Result<Value, String> {
     let res = state.client
         .get("https://prices.runescape.wiki/api/v1/osrs/latest")
         .header("User-Agent", "osrs-afk-optimiser/1.0.0 (contact: github.com/matthewjdoyle)")
+        .timeout(Duration::from_secs(15))
         .send()
         .await
+        .and_then(|res| res.error_for_status())
         .map_err(|e| e.to_string())?;
 
     let json = res.json::<Value>().await.map_err(|e| e.to_string())?;
@@ -24,8 +27,10 @@ async fn fetch_mapping(state: State<'_, AppState>) -> Result<Value, String> {
     let res = state.client
         .get("https://prices.runescape.wiki/api/v1/osrs/mapping")
         .header("User-Agent", "osrs-afk-optimiser/1.0.0 (contact: github.com/matthewjdoyle)")
+        .timeout(Duration::from_secs(15))
         .send()
         .await
+        .and_then(|res| res.error_for_status())
         .map_err(|e| e.to_string())?;
 
     let json = res.json::<Value>().await.map_err(|e| e.to_string())?;

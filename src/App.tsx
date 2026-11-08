@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { invoke } from '@tauri-apps/api/core';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import type { Method, ItemPrice, ItemMapping, MethodResult } from './calculations/profit';
-import { calculateMethod } from './calculations/profit';
+import { useMarketData } from './hooks/useMarketData';
+import type { Method } from './calculations/profit';
+import { calculateMethod, hasConfirmedProfit } from './calculations/profit';
 import methodsData from './data/methods.json';
 import MethodTable from './components/MethodTable';
 import MethodGraph from './components/graph/MethodGraph';
@@ -14,12 +14,11 @@ const tabs = [
   { id: 'info', label: 'Info' },
 ] as const;
 
+const methods = methodsData as Method[];
+const allSkills = Array.from(new Set(methods.map(m => m.skill))).sort();
+
 function App() {
-  const [methods] = useState<Method[]>(methodsData as Method[]);
-  const [prices, setPrices] = useState<Record<string, ItemPrice>>({});
-  const [mapping, setMapping] = useState<Record<string, ItemMapping>>({});
-  const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const { prices, mapping, refresh } = useMarketData();
   
   // Theme
   const [theme, setTheme] = useLocalStorage<'dark' | 'light' | 'rsmode'>('afk-theme', 'rsmode');
@@ -39,83 +38,36 @@ function App() {
 
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]['id']>('methods');
 
-  const allSkills = Array.from(new Set(methods.map(m => m.skill))).sort();
-
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const fetchMappingData = async () => {
-    try {
-      let mappingRes: any;
-      try {
-        mappingRes = await invoke('fetch_mapping');
-      } catch (e) {
-        const res = await fetch('https://prices.runescape.wiki/api/v1/osrs/mapping');
-        mappingRes = await res.json();
-      }
-
-      const mappingItems: Record<string, ItemMapping> = {};
-      for (const item of mappingRes) {
-        mappingItems[item.id.toString()] = {
-          id: item.id,
-          name: item.name,
-          limit: item.limit,
-          value: item.value,
-          members: item.members
-        };
-      }
-      setMapping(mappingItems);
-    } catch (e) {
-      console.error('Failed to fetch mapping:', e);
-    }
-  };
-
-  const fetchPricesData = async () => {
-    try {
-      let pricesRes: { data?: Record<string, ItemPrice> };
-      try {
-        pricesRes = await invoke('fetch_prices');
-      } catch {
-        const res = await fetch('https://prices.runescape.wiki/api/v1/osrs/latest');
-        if (!res.ok) throw new Error(`Price request failed (${res.status})`);
-        pricesRes = await res.json();
-      }
-      
-      const latestPrices = pricesRes?.data;
-      if (!latestPrices || typeof latestPrices !== 'object' || Array.isArray(latestPrices)) {
-        throw new Error('Price response is missing item data');
-      }
-      setPrices(latestPrices);
-      setLastUpdated(new Date());
-    } catch (e) {
-      console.error('Failed to fetch prices:', e);
-    }
-  };
-
-  const fetchInitialData = async () => {
-    setLoading(true);
-    await fetchMappingData();
-    await fetchPricesData();
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchInitialData();
-    // Refresh prices every 5 minutes
-    const interval = setInterval(fetchPricesData, 300000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const results: MethodResult[] = methods.map(m => calculateMethod(m, prices, mapping));
-
-  const filteredResults = results.filter(r => {
-    if (r.method.afk.typicalSeconds < minAfk) return false;
-    if (r.method.xp.perHour < minXp) return false;
-    if (profitableOnly && r.profitPerHour <= 0) return false;
-    if (selectedSkills.length > 0 && !selectedSkills.includes(r.method.skill)) return false;
+  const latestPrices = 'data' in prices ? prices.data : {};
+  const itemMapping = mapping.status === 'ready' ? mapping.data : {};
+  const candidates = methods.filter(method => {
+    if (method.afk.typicalSeconds < minAfk) return false;
+    if (method.xp.perHour < minXp) return false;
+    if (selectedSkills.length > 0 && !selectedSkills.includes(method.skill)) return false;
     return true;
-  });
+  }).map(method => calculateMethod(method, latestPrices, itemMapping));
+  const filteredResults = profitableOnly ? candidates.filter(hasConfirmedProfit) : candidates;
+
+  let emptyResultsMessage = 'No methods match your filters.';
+  if (profitableOnly && candidates.length > 0) {
+    emptyResultsMessage = prices.status === 'loading' && candidates.some(result => result.profitPerHour === null)
+      ? 'Waiting for GE prices to confirm profit…'
+      : 'No methods with confirmed profit match your filters.';
+  }
+
+  const priceRequestPending = prices.status === 'loading' || prices.status === 'refreshing';
+  const updatedTime = 'updatedAt' in prices ? prices.updatedAt.toLocaleTimeString() : '';
+  const priceStatus = {
+    loading: 'Loading GE prices…',
+    ready: `Prices updated ${updatedTime}`,
+    refreshing: `Refreshing GE prices… Last updated ${updatedTime}`,
+    stale: `Refresh failed. Showing GE prices from ${updatedTime}.`,
+    unavailable: 'GE prices unavailable.',
+  }[prices.status];
 
   useEffect(() => {
     const handleOpenFaq = (e: Event) => {
@@ -157,20 +109,16 @@ function App() {
               <ChevronDown className="w-4 h-4 text-muted absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted sm:text-sm">
-                {lastUpdated ? `Prices updated ${lastUpdated.toLocaleTimeString()}` : loading ? 'Loading...' : 'Prices unavailable'}
+              <span role="status" className="text-xs text-muted sm:text-sm">
+                {priceStatus}
               </span>
               <button
                 aria-label="Refresh GE prices"
-                onClick={async () => {
-                  setLoading(true);
-                  await fetchPricesData();
-                  setLoading(false);
-                }}
-                disabled={loading}
+                onClick={refresh}
+                disabled={priceRequestPending}
                 className="p-2 bg-surface rounded hover:bg-surface-hover transition disabled:opacity-50 cursor-pointer text-main"
               >
-                <RefreshCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCcw aria-hidden="true" className={`w-4 h-4 ${priceRequestPending ? 'animate-spin' : ''}`} />
               </button>
             </div>
           </div>
@@ -368,20 +316,27 @@ function App() {
 
         <div id="methods-panel" role="tabpanel" aria-labelledby="methods-tab" hidden={activeTab !== 'methods'}>
           {activeTab === 'methods' && (
-            <MethodTable
-              results={filteredResults} 
-              loading={loading && !lastUpdated} 
-              showAfkColumn={showAfkColumn}
-              showEconomicsColumn={showEconomicsColumn}
-              showGeLimitColumn={showGeLimitColumn}
-              showGpXpColumn={showGpXpColumn}
-            />
+            <>
+              {showGeLimitColumn && mapping.status !== 'ready' && (
+                <p role="status" className="mb-2 text-sm text-muted">
+                  {mapping.status === 'loading' ? 'Loading GE buy limits…' : 'GE buy limits unavailable.'}
+                </p>
+              )}
+              <MethodTable
+                results={filteredResults}
+                emptyResultsMessage={emptyResultsMessage}
+                showAfkColumn={showAfkColumn}
+                showEconomicsColumn={showEconomicsColumn}
+                showGeLimitColumn={showGeLimitColumn}
+                showGpXpColumn={showGpXpColumn}
+              />
+            </>
           )}
         </div>
 
         <div id="graph-panel" role="tabpanel" aria-labelledby="graph-tab" hidden={activeTab !== 'graph'}>
           {activeTab === 'graph' && (
-            <MethodGraph results={filteredResults} priceLoading={loading && !lastUpdated} profitableOnly={profitableOnly} />
+            <MethodGraph results={filteredResults} priceLoading={prices.status === 'loading'} emptyResultsMessage={emptyResultsMessage} />
           )}
         </div>
 

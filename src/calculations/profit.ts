@@ -25,10 +25,10 @@ export interface Method {
 }
 
 export interface ItemPrice {
-  high: number;
-  highTime: number;
-  low: number;
-  lowTime: number;
+  high: number | null;
+  highTime?: number | null;
+  low: number | null;
+  lowTime?: number | null;
 }
 
 export interface ItemMapping {
@@ -46,11 +46,37 @@ export function geTax(price: number, exempt: boolean = false): number {
 
 export interface MethodResult {
   method: Method;
-  profitPerHour: number;
-  revenuePerHour: number;
-  costPerHour: number;
+  profitPerHour: number | null;
+  revenuePerHour: number | null;
+  costPerHour: number | null;
   inputVolumeSustain: number | null;
-  itemPrices: { id: number; name: string; isInput: boolean; amountPerHour: number; price: number; tax: number; limit?: number }[];
+  itemPrices: { id: number; name: string; isInput: boolean; amountPerHour: number; price: number | null; tax: number; limit?: number }[];
+}
+
+export function isUsableQuote(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
+export function isMissingPrice(item: MethodResult['itemPrices'][number]): boolean {
+  return item.amountPerHour !== 0 && item.price === null;
+}
+
+export function hasConfirmedProfit(result: MethodResult): boolean {
+  return result.profitPerHour !== null && result.profitPerHour > 0;
+}
+
+export function getGpPerXp(result: MethodResult): number | null {
+  const { method, profitPerHour } = result;
+  return profitPerHour !== null && method.xp.perHour > 0 ? profitPerHour / method.xp.perHour : null;
+}
+
+function getItemPrice(id: number, quote: ItemPrice | undefined, isInput: boolean): number | null {
+  if (id === 995) return 1;
+  if (id === 13204) return 1000;
+  const preferred = isInput ? quote?.high : quote?.low;
+  const fallback = isInput ? quote?.low : quote?.high;
+  if (isUsableQuote(preferred)) return preferred;
+  return isUsableQuote(fallback) ? fallback : null;
 }
 
 export function calculateMethod(
@@ -58,22 +84,14 @@ export function calculateMethod(
   prices: Record<string, ItemPrice>,
   mapping: Record<string, ItemMapping>
 ): MethodResult {
-  let costPerHour = 0;
-  let revenuePerHour = 0;
+  let cost = 0;
+  let revenue = 0;
   let minSustain: number | null = null;
   const itemPrices: MethodResult['itemPrices'] = [];
 
   for (const input of method.inputs) {
-    let buyPrice = 0;
-    if (input.id === 995) {
-      buyPrice = 1;
-    } else if (input.id === 13204) {
-      buyPrice = 1000;
-    } else {
-      const priceData = prices[input.id.toString()];
-      buyPrice = priceData ? (priceData.high || priceData.low || 0) : 0;
-    }
-    costPerHour += buyPrice * input.amountPerHour;
+    const buyPrice = getItemPrice(input.id, prices[input.id], true);
+    if (buyPrice !== null) cost += buyPrice * input.amountPerHour;
 
     const mapData = mapping[input.id.toString()];
     itemPrices.push({ id: input.id, name: input.name, isInput: true, amountPerHour: input.amountPerHour, price: buyPrice, tax: 0, limit: mapData?.limit });
@@ -87,31 +105,19 @@ export function calculateMethod(
   }
 
   for (const output of method.outputs) {
-    let sellPrice = 0;
-    let tax = 0;
-    
-    if (output.id === 995) {
-      sellPrice = 1;
-      tax = 0;
-    } else if (output.id === 13204) {
-      sellPrice = 1000;
-      tax = 0;
-    } else {
-      const priceData = prices[output.id.toString()];
-      sellPrice = priceData ? (priceData.low || priceData.high || 0) : 0;
-      tax = geTax(sellPrice, false);
-    }
-    
-    const netSellPrice = sellPrice - tax;
+    const sellPrice = getItemPrice(output.id, prices[output.id], false);
+    const tax = sellPrice === null ? 0 : geTax(sellPrice, output.id === 995 || output.id === 13204);
     const mapData = mapping[output.id.toString()];
 
-    revenuePerHour += netSellPrice * output.amountPerHour;
+    if (sellPrice !== null) revenue += (sellPrice - tax) * output.amountPerHour;
     itemPrices.push({ id: output.id, name: output.name, isInput: false, amountPerHour: output.amountPerHour, price: sellPrice, tax: tax, limit: mapData?.limit });
   }
 
+  const costPerHour = itemPrices.some(item => item.isInput && isMissingPrice(item)) ? null : cost;
+  const revenuePerHour = itemPrices.some(item => !item.isInput && isMissingPrice(item)) ? null : revenue;
   return {
     method,
-    profitPerHour: revenuePerHour - costPerHour,
+    profitPerHour: costPerHour === null || revenuePerHour === null ? null : revenuePerHour - costPerHour,
     revenuePerHour,
     costPerHour,
     inputVolumeSustain: minSustain,
