@@ -399,6 +399,326 @@
     ]
   },
   {
+    "id": "lobsters",
+    "name": "Lobsters",
+    "skill": "Fishing",
+    "level": 40,
+    "afk": {
+      "typicalSeconds": 70,
+      "interactionsPerHour": 50,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 33000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Raw lobster",
+        "id": 377,
+        "amountPerHour": 365
+      }
+    ],
+    "requirements": [
+      "Lobster pot"
+    ]
+  },
+  {
+    "id": "lobsters-fish-barrel",
+    "name": "Lobsters (Fish Barrel)",
+    "skill": "Fishing",
+    "level": 40,
+    "afk": {
+      "typicalSeconds": 110,
+      "interactionsPerHour": 33,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 36000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Raw lobster",
+        "id": 377,
+        "amountPerHour": 400
+      }
+    ],
+    "requirements": [
+      "Lobster pot",
+      "Fish barrel"
+    ]
+  },
+  {
+    "id": "tuna-swordfish",
+    "name": "Tuna & Swordfish",
+    "skill": "Fishing",
+    "level": 50,
+    "afk": {
+      "typicalSeconds": 70,
+      "interactionsPerHour": 50,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 35600
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Raw swordfish",
+        "id": 371,
+        "amountPerHour": 180
+      },
+      {
+        "name": "Raw tuna",
+        "id": 359,
+        "amountPerHour": 220
+      }
+    ],
+    "requirements": [
+      "Harpoon"
+    ]
+  },
+  {
+    "id": "tuna-swordfish-fish-barrel",
+    "name": "Tuna & Swordfish (Fish Barrel)",
+    "skill": "Fishing",
+    "level": 50,
+    "afk": {
+      "typicalSeconds": 110,
+      "interactionsPerHour": 33,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 37400
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Raw swordfish",
+        "id": 371,
+        "amountPerHour": 190
+      },
+      {
+        "name": "Raw tuna",
+        "id": 359,
+        "amountPerHour": 230
+      }
+    ],
+    "requirements": [
+      "Harpoon",
+      "Fish barrel"
+    ]
+  },
+  {
+    "id": "sharks",
+    "name": "Sharks",
+    "skill": "Fishing",
+    "level": 76,
+    "afk": {
+      "typicalSeconds": 150,
+      "interactionsPerHour": 24,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 14300
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Raw shark",
+        "id": 383,
+        "amountPerHour": 130
+      }
+    ],
+    "requirements": [
+      "Harpoon"
+    ]
+  },
+  {
+    "id": "sharks-fish-barrel",
+    "name": "Sharks (Fish Barrel)",
+    "skill": "Fishing",
+    "level": 76,
+    "afk": {
+      "typicalSeconds": 210,
+      "interactionsPerHour": 17,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 14850
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Raw shark",
+        "id": 383,
+        "amountPerHour": 135
+      }
+    ],
+    "requirements": [
+      "Harpoon",
+      "Fish barrel"
+    ]
+  },
+  {
+    "id": "fly-fishing",
+    "name": "Fly Fishing (Trout & Salmon)",
+    "skill": "Fishing",
+    "level": 30,
+    "afk": {
+      "typicalSeconds": 55,
+      "interactionsPerHour": 65,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 43000
+    },
+    "inputs": [
+      {
+        "name": "Feather",
+        "id": 314,
+        "amountPerHour": 700
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Raw salmon",
+        "id": 331,
+        "amountPerHour": 405
+      },
+      {
+        "name": "Raw trout",
+        "id": 335,
+        "amountPerHour": 295
+      }
+    ],
+    "requirements": [
+      "Fly fishing rod"
+    ]
+  },
+  {
+    "id": "fly-fishing-fish-barrel",
+    "name": "Fly Fishing (Trout & Salmon, Fish Barrel)",
+    "skill": "Fishing",
+    "level": 30,
+    "afk": {
+      "typicalSeconds": 90,
+      "interactionsPerHour": 40,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 46000
+    },
+    "inputs": [
+      {
+        "name": "Feather",
+        "id": 314,
+        "amountPerHour": 750
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Raw salmon",
+        "id": 331,
+        "amountPerHour": 435
+      },
+      {
+        "name": "Raw trout",
+        "id": 335,
+        "amountPerHour": 315
+      }
+    ],
+    "requirements": [
+      "Fly fishing rod",
+      "Fish barrel"
+    ]
+  },
+  {
+    "id": "barbarian-fishing",
+    "name": "Barbarian Fishing",
+    "iconUrl": "https://static.runelite.net/cache/item/icon/11332.png",
+    "skill": "Fishing",
+    "level": 70,
+    "afk": {
+      "typicalSeconds": 50,
+      "interactionsPerHour": 72,
+      "bankingComplexity": "None"
+    },
+    "xp": {
+      "perHour": 55000
+    },
+    "inputs": [
+      {
+        "name": "Feather",
+        "id": 314,
+        "amountPerHour": 800
+      }
+    ],
+    "outputs": [],
+    "requirements": [
+      "Barbarian Training",
+      "45 Agility, 45 Strength",
+      "Barbarian rod"
+    ]
+  },
+  {
+    "id": "barbarian-fishing-fish-barrel",
+    "name": "Barbarian Fishing (Fish Barrel)",
+    "iconUrl": "https://static.runelite.net/cache/item/icon/11332.png",
+    "skill": "Fishing",
+    "level": 70,
+    "afk": {
+      "typicalSeconds": 100,
+      "interactionsPerHour": 36,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 55000
+    },
+    "inputs": [
+      {
+        "name": "Feather",
+        "id": 314,
+        "amountPerHour": 800
+      }
+    ],
+    "outputs": [],
+    "requirements": [
+      "Barbarian Training",
+      "45 Agility, 45 Strength",
+      "Barbarian rod, Fish barrel (CoX bank)"
+    ]
+  },
+  {
+    "id": "minnows",
+    "name": "Minnows",
+    "iconUrl": "https://static.runelite.net/cache/item/icon/21356.png",
+    "skill": "Fishing",
+    "level": 82,
+    "afk": {
+      "typicalSeconds": 15,
+      "interactionsPerHour": 240,
+      "bankingComplexity": "None"
+    },
+    "xp": {
+      "perHour": 44000
+    },
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "Raw shark",
+        "id": 383,
+        "amountPerHour": 500
+      }
+    ],
+    "requirements": [
+      "Fishing Contest",
+      "Full angler's outfit",
+      "Small fishing net"
+    ]
+  },
+  {
     "id": "amethyst",
     "name": "Amethyst",
     "skill": "Mining",
