@@ -2475,5 +2475,304 @@
       "Hard Wilderness Diary",
       "Pestle and mortar"
     ]
+  },
+  {
+    "id": "wooden-repair-kits",
+    "name": "Wooden repair kits",
+    "skill": "Construction",
+    "level": 1,
+    "afk": {
+      "typicalSeconds": 29,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 52200
+    },
+    "inputs": [
+      {
+        "name": "Plank",
+        "id": 960,
+        "amountPerHour": 2400
+      },
+      {
+        "name": "Bronze nails",
+        "id": 4819,
+        "amountPerHour": 12000
+      },
+      {
+        "name": "Swamp paste",
+        "id": 1941,
+        "amountPerHour": 6000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Repair kit",
+        "id": 31964,
+        "amountPerHour": 2400
+      }
+    ],
+    "requirements": [
+      "Pandemonium"
+    ]
+  },
+  {
+    "id": "oak-repair-kits",
+    "name": "Oak repair kits",
+    "skill": "Construction",
+    "level": 19,
+    "afk": {
+      "typicalSeconds": 29,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 108000
+    },
+    "inputs": [
+      {
+        "name": "Oak plank",
+        "id": 8778,
+        "amountPerHour": 2400
+      },
+      {
+        "name": "Iron nails",
+        "id": 4820,
+        "amountPerHour": 12000
+      },
+      {
+        "name": "Swamp paste",
+        "id": 1941,
+        "amountPerHour": 6000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Oak repair kit",
+        "id": 31967,
+        "amountPerHour": 2400
+      }
+    ],
+    "requirements": [
+      "Pandemonium",
+      "Shipwrights' Workbench",
+      "Hammer and saw"
+    ]
+  },
+  {
+    "id": "teak-repair-kits",
+    "name": "Teak repair kits",
+    "skill": "Construction",
+    "level": 30,
+    "afk": {
+      "typicalSeconds": 29,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 162000
+    },
+    "inputs": [
+      {
+        "name": "Teak plank",
+        "id": 8780,
+        "amountPerHour": 2400
+      },
+      {
+        "name": "Steel nails",
+        "id": 1539,
+        "amountPerHour": 12000
+      },
+      {
+        "name": "Swamp paste",
+        "id": 1941,
+        "amountPerHour": 6000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Teak repair kit",
+        "id": 31970,
+        "amountPerHour": 2400
+      }
+    ],
+    "requirements": [
+      "Pandemonium",
+      "Shipwrights' Workbench",
+      "Hammer and saw"
+    ]
+  },
+  {
+    "id": "mahogany-repair-kits",
+    "name": "Mahogany repair kits",
+    "skill": "Construction",
+    "level": 47,
+    "afk": {
+      "typicalSeconds": 29,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 252000
+    },
+    "inputs": [
+      {
+        "name": "Mahogany plank",
+        "id": 8782,
+        "amountPerHour": 2400
+      },
+      {
+        "name": "Mithril nails",
+        "id": 4822,
+        "amountPerHour": 12000
+      },
+      {
+        "name": "Swamp paste",
+        "id": 1941,
+        "amountPerHour": 6000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Mahogany repair kit",
+        "id": 31973,
+        "amountPerHour": 2400
+      }
+    ],
+    "requirements": [
+      "Pandemonium",
+      "Shipwrights' Workbench",
+      "Hammer and saw"
+    ]
+  },
+  {
+    "id": "camphor-repair-kits",
+    "name": "Camphor repair kits",
+    "skill": "Construction",
+    "level": 66,
+    "afk": {
+      "typicalSeconds": 29,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 306000
+    },
+    "inputs": [
+      {
+        "name": "Camphor plank",
+        "id": 31432,
+        "amountPerHour": 2400
+      },
+      {
+        "name": "Adamantite nails",
+        "id": 4823,
+        "amountPerHour": 12000
+      },
+      {
+        "name": "Swamp paste",
+        "id": 1941,
+        "amountPerHour": 6000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Camphor repair kit",
+        "id": 31976,
+        "amountPerHour": 2400
+      }
+    ],
+    "requirements": [
+      "Pandemonium",
+      "Shipwrights' Workbench",
+      "Hammer and saw"
+    ]
+  },
+  {
+    "id": "ironwood-repair-kits",
+    "name": "Ironwood repair kits",
+    "skill": "Construction",
+    "level": 80,
+    "afk": {
+      "typicalSeconds": 29,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 360000
+    },
+    "inputs": [
+      {
+        "name": "Ironwood plank",
+        "id": 31435,
+        "amountPerHour": 1200
+      },
+      {
+        "name": "Rune nails",
+        "id": 4824,
+        "amountPerHour": 12000
+      },
+      {
+        "name": "Swamp paste",
+        "id": 1941,
+        "amountPerHour": 6000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Ironwood repair kit",
+        "id": 31979,
+        "amountPerHour": 3600
+      }
+    ],
+    "requirements": [
+      "Pandemonium",
+      "Shipwrights' Workbench",
+      "Hammer and saw"
+    ]
+  },
+  {
+    "id": "rosewood-repair-kits",
+    "name": "Rosewood repair kits",
+    "skill": "Construction",
+    "level": 92,
+    "afk": {
+      "typicalSeconds": 29,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 396000
+    },
+    "inputs": [
+      {
+        "name": "Rosewood plank",
+        "id": 31438,
+        "amountPerHour": 1200
+      },
+      {
+        "name": "Dragon nails",
+        "id": 31406,
+        "amountPerHour": 6000
+      },
+      {
+        "name": "Swamp paste",
+        "id": 1941,
+        "amountPerHour": 6000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Rosewood repair kit",
+        "id": 31982,
+        "amountPerHour": 3600
+      }
+    ],
+    "requirements": [
+      "Pandemonium",
+      "Shipwrights' Workbench",
+      "Hammer and saw"
+    ]
   }
 ]
