@@ -2883,5 +2883,401 @@
       "Shipwrights' Workbench",
       "Hammer and saw"
     ]
+  },
+  {
+    "id": "cutting-diamond-bolt-tips",
+    "name": "Cutting Diamond Bolt Tips",
+    "skill": "Fletching",
+    "level": 65,
+    "afk": {
+      "typicalSeconds": 32,
+      "interactionsPerHour": 110,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 19600
+    },
+    "inputs": [
+      {
+        "name": "Diamond",
+        "id": 1601,
+        "amountPerHour": 2800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Diamond bolt tips",
+        "id": 9192,
+        "amountPerHour": 33600
+      }
+    ],
+    "requirements": [
+      "Chisel (Jeweller's chisel recommended)"
+    ]
+  },
+  {
+    "id": "cutting-ruby-bolt-tips",
+    "name": "Cutting Ruby Bolt Tips",
+    "skill": "Fletching",
+    "level": 63,
+    "afk": {
+      "typicalSeconds": 32,
+      "interactionsPerHour": 110,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 17640
+    },
+    "inputs": [
+      {
+        "name": "Ruby",
+        "id": 1603,
+        "amountPerHour": 2800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Ruby bolt tips",
+        "id": 9191,
+        "amountPerHour": 33600
+      }
+    ],
+    "requirements": [
+      "Chisel (Jeweller's chisel recommended)"
+    ]
+  },
+  {
+    "id": "fletching-headless-arrows",
+    "name": "Fletching Headless Arrows",
+    "skill": "Fletching",
+    "level": 1,
+    "afk": {
+      "typicalSeconds": 90,
+      "interactionsPerHour": 40,
+      "bankingComplexity": "None"
+    },
+    "xp": {
+      "perHour": 42855
+    },
+    "inputs": [
+      {
+        "name": "Arrow shaft",
+        "id": 52,
+        "amountPerHour": 42855
+      },
+      {
+        "name": "Feather",
+        "id": 314,
+        "amountPerHour": 42855
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Headless arrow",
+        "id": 53,
+        "amountPerHour": 42855
+      }
+    ],
+    "requirements": []
+  },
+  {
+    "id": "fletching-ogre-arrow-shafts",
+    "name": "Fletching Ogre Arrow Shafts",
+    "skill": "Fletching",
+    "level": 5,
+    "afk": {
+      "typicalSeconds": 49,
+      "interactionsPerHour": 67,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 12960
+    },
+    "inputs": [
+      {
+        "name": "Achey tree logs",
+        "id": 2862,
+        "amountPerHour": 1800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Ogre arrow shaft",
+        "id": 2864,
+        "amountPerHour": 7200
+      }
+    ],
+    "requirements": [
+      "Knife",
+      "Started Big Chompy Bird Hunting"
+    ]
+  },
+  {
+    "id": "cleaning-grimy-toadflax",
+    "name": "Cleaning Grimy Toadflax",
+    "skill": "Herblore",
+    "level": 30,
+    "afk": {
+      "typicalSeconds": 33,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 22400
+    },
+    "inputs": [
+      {
+        "name": "Grimy toadflax",
+        "id": 3049,
+        "amountPerHour": 2800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Toadflax",
+        "id": 2998,
+        "amountPerHour": 2800
+      }
+    ],
+    "requirements": [
+      "Druidic Ritual"
+    ]
+  },
+  {
+    "id": "cleaning-grimy-irit",
+    "name": "Cleaning Grimy Irit",
+    "skill": "Herblore",
+    "level": 40,
+    "afk": {
+      "typicalSeconds": 33,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 24640
+    },
+    "inputs": [
+      {
+        "name": "Grimy irit leaf",
+        "id": 209,
+        "amountPerHour": 2800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Irit leaf",
+        "id": 259,
+        "amountPerHour": 2800
+      }
+    ],
+    "requirements": [
+      "Druidic Ritual"
+    ]
+  },
+  {
+    "id": "cleaning-grimy-kwuarm",
+    "name": "Cleaning Grimy Kwuarm",
+    "skill": "Herblore",
+    "level": 54,
+    "afk": {
+      "typicalSeconds": 33,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 31640
+    },
+    "inputs": [
+      {
+        "name": "Grimy kwuarm",
+        "id": 213,
+        "amountPerHour": 2800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Kwuarm",
+        "id": 263,
+        "amountPerHour": 2800
+      }
+    ],
+    "requirements": [
+      "Druidic Ritual"
+    ]
+  },
+  {
+    "id": "cleaning-grimy-lantadyme",
+    "name": "Cleaning Grimy Lantadyme",
+    "skill": "Herblore",
+    "level": 67,
+    "afk": {
+      "typicalSeconds": 33,
+      "interactionsPerHour": 100,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 36680
+    },
+    "inputs": [
+      {
+        "name": "Grimy lantadyme",
+        "id": 2485,
+        "amountPerHour": 2800
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Lantadyme",
+        "id": 2481,
+        "amountPerHour": 2800
+      }
+    ],
+    "requirements": [
+      "Druidic Ritual"
+    ]
+  },
+  {
+    "id": "making-guam-potions-unf",
+    "name": "Making Guam Potions (unf)",
+    "skill": "Herblore",
+    "level": 3,
+    "afk": {
+      "typicalSeconds": 8,
+      "interactionsPerHour": 286,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 0
+    },
+    "inputs": [
+      {
+        "name": "Guam leaf",
+        "id": 249,
+        "amountPerHour": 4000
+      },
+      {
+        "name": "Vial of water",
+        "id": 227,
+        "amountPerHour": 4000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Guam potion (unf)",
+        "id": 91,
+        "amountPerHour": 4000
+      }
+    ],
+    "requirements": [
+      "Druidic Ritual"
+    ]
+  },
+  {
+    "id": "making-harralander-potions-unf",
+    "name": "Making Harralander Potions (unf)",
+    "skill": "Herblore",
+    "level": 22,
+    "afk": {
+      "typicalSeconds": 8,
+      "interactionsPerHour": 286,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 0
+    },
+    "inputs": [
+      {
+        "name": "Harralander",
+        "id": 255,
+        "amountPerHour": 4000
+      },
+      {
+        "name": "Vial of water",
+        "id": 227,
+        "amountPerHour": 4000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Harralander potion (unf)",
+        "id": 97,
+        "amountPerHour": 4000
+      }
+    ],
+    "requirements": [
+      "Druidic Ritual"
+    ]
+  },
+  {
+    "id": "making-irit-potions-unf",
+    "name": "Making Irit Potions (unf)",
+    "skill": "Herblore",
+    "level": 45,
+    "afk": {
+      "typicalSeconds": 8,
+      "interactionsPerHour": 286,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 0
+    },
+    "inputs": [
+      {
+        "name": "Irit leaf",
+        "id": 259,
+        "amountPerHour": 4000
+      },
+      {
+        "name": "Vial of water",
+        "id": 227,
+        "amountPerHour": 4000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Irit potion (unf)",
+        "id": 101,
+        "amountPerHour": 4000
+      }
+    ],
+    "requirements": [
+      "Druidic Ritual"
+    ]
+  },
+  {
+    "id": "making-kwuarm-potions-unf",
+    "name": "Making Kwuarm Potions (unf)",
+    "skill": "Herblore",
+    "level": 55,
+    "afk": {
+      "typicalSeconds": 8,
+      "interactionsPerHour": 286,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 0
+    },
+    "inputs": [
+      {
+        "name": "Kwuarm",
+        "id": 263,
+        "amountPerHour": 4000
+      },
+      {
+        "name": "Vial of water",
+        "id": 227,
+        "amountPerHour": 4000
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Kwuarm potion (unf)",
+        "id": 105,
+        "amountPerHour": 4000
+      }
+    ],
+    "requirements": [
+      "Druidic Ritual"
+    ]
   }
 ]
