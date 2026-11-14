@@ -1906,6 +1906,115 @@
     ]
   },
   {
+    "id": "crafting-ruby-bracelets",
+    "name": "Crafting Ruby Bracelets",
+    "skill": "Crafting",
+    "level": 42,
+    "afk": {
+      "typicalSeconds": 40,
+      "interactionsPerHour": 92,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 96000
+    },
+    "inputs": [
+      {
+        "name": "Gold bar",
+        "id": 2357,
+        "amountPerHour": 1200
+      },
+      {
+        "name": "Ruby",
+        "id": 1603,
+        "amountPerHour": 1200
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Ruby bracelet",
+        "id": 11085,
+        "amountPerHour": 1200
+      }
+    ],
+    "requirements": [
+      "Bracelet mould and Edgeville furnace"
+    ]
+  },
+  {
+    "id": "crafting-diamond-bracelets",
+    "name": "Crafting Diamond Bracelets",
+    "skill": "Crafting",
+    "level": 58,
+    "afk": {
+      "typicalSeconds": 40,
+      "interactionsPerHour": 92,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 114000
+    },
+    "inputs": [
+      {
+        "name": "Gold bar",
+        "id": 2357,
+        "amountPerHour": 1200
+      },
+      {
+        "name": "Diamond",
+        "id": 1601,
+        "amountPerHour": 1200
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Diamond bracelet",
+        "id": 11092,
+        "amountPerHour": 1200
+      }
+    ],
+    "requirements": [
+      "Bracelet mould and Edgeville furnace"
+    ]
+  },
+  {
+    "id": "crafting-diamond-amulets-u",
+    "name": "Crafting Diamond Amulets (u)",
+    "skill": "Crafting",
+    "level": 70,
+    "afk": {
+      "typicalSeconds": 40,
+      "interactionsPerHour": 92,
+      "bankingComplexity": "Low"
+    },
+    "xp": {
+      "perHour": 120000
+    },
+    "inputs": [
+      {
+        "name": "Gold bar",
+        "id": 2357,
+        "amountPerHour": 1200
+      },
+      {
+        "name": "Diamond",
+        "id": 1601,
+        "amountPerHour": 1200
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Diamond amulet (u)",
+        "id": 1681,
+        "amountPerHour": 1200
+      }
+    ],
+    "requirements": [
+      "F2P",
+      "Amulet mould and Edgeville furnace"
+    ]
+  },
+  {
     "id": "merchant-shipwrecks",
     "name": "Merchant shipwreck salvaging",
     "skill": "Sailing",
