@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import type { MethodResult } from '../calculations/profit';
 import { formatGp, getGpPerXp } from '../calculations/profit';
@@ -251,6 +251,61 @@ interface Props {
 const MethodTable: React.FC<Props> = ({ results, emptyResultsMessage, showAfkColumn = true, showEconomicsColumn = true, showGeLimitColumn = true, showGpXpColumn = true }) => {
   const [sortField, setSortField] = useLocalStorage<'profit' | 'xp' | 'afk' | 'sustain' | 'gpxp' | 'method' | 'skill'>('afk-sortField', 'profit');
   const [sortDesc, setSortDesc] = useLocalStorage<boolean>('afk-sortDesc', true);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLTableElement>(null);
+  const bottomScrollbarRef = useRef<HTMLDivElement>(null);
+  const synchronizedPositionsRef = useRef(new WeakMap<HTMLDivElement, number>());
+  const [scrollSize, setScrollSize] = useState({ content: 0, viewport: 0 });
+  const isOverflowing = scrollSize.content > scrollSize.viewport;
+
+  const synchronizeScroll = useCallback((source: HTMLDivElement) => {
+    const viewport = viewportRef.current;
+    // Ignore rails whose dimensions have not caught up with a resize yet.
+    if (!viewport || source.scrollWidth !== viewport.scrollWidth) return;
+    for (const target of [viewport, bottomScrollbarRef.current]) {
+      if (target && target.scrollWidth === viewport.scrollWidth) {
+        if (target.scrollLeft !== source.scrollLeft) target.scrollLeft = source.scrollLeft;
+        synchronizedPositionsRef.current.set(target, target.scrollLeft);
+      }
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    const table = tableRef.current;
+    if (!viewport || !table) return;
+    const measure = () => {
+      const content = viewport.scrollWidth;
+      const width = viewport.clientWidth;
+      synchronizeScroll(viewport);
+      setScrollSize(previous => previous.content === content && previous.viewport === width
+        ? previous : { content, viewport: width });
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(viewport);
+    observer.observe(table);
+    measure();
+    return () => observer.disconnect();
+  }, [synchronizeScroll]);
+
+  useLayoutEffect(() => {
+    if (viewportRef.current) synchronizeScroll(viewportRef.current);
+  }, [scrollSize, synchronizeScroll]);
+
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const source = event.currentTarget;
+    const viewport = viewportRef.current;
+    const synchronizedPosition = synchronizedPositionsRef.current.get(source);
+    // Native resize clamping can emit rail events before ResizeObserver runs.
+    const maximum = viewport ? viewport.scrollWidth - viewport.clientWidth : 0;
+    if (viewport && source !== viewport && synchronizedPosition !== undefined
+      && synchronizedPosition > maximum && source.scrollLeft === maximum) {
+      synchronizeScroll(viewport);
+      return;
+    }
+    // Programmatic scroll events can arrive after the next user input. Do not echo them back.
+    if (synchronizedPosition !== source.scrollLeft) synchronizeScroll(source);
+  };
 
   const handleSort = (field: typeof sortField) => {
     if (sortField === field) {
@@ -305,14 +360,17 @@ const MethodTable: React.FC<Props> = ({ results, emptyResultsMessage, showAfkCol
     return sortDesc ? <ArrowUp className="w-3 h-3 inline ml-1" /> : <ArrowDown className="w-3 h-3 inline ml-1" />;
   };
 
-  const visibleColumnsCount = 4 + (showAfkColumn ? 1 : 0) + (showEconomicsColumn ? 1 : 0) + (showGeLimitColumn ? 1 : 0) + (showGpXpColumn ? 1 : 0);
+  const visibleColumnsCount = 5 + (showAfkColumn ? 1 : 0) + (showEconomicsColumn ? 1 : 0) + (showGeLimitColumn ? 1 : 0) + (showGpXpColumn ? 1 : 0);
 
   return (
-    <div className="max-w-full bg-surface rounded-lg overflow-hidden border border-main">
-      <div className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-accent" role="region" aria-label="AFK methods table" tabIndex={0}>
-        <table className="w-full text-left text-sm whitespace-nowrap [&_th]:px-3 [&_td]:px-3">
+    <div className="relative isolate min-w-0 max-w-full">
+      <div ref={viewportRef} onScroll={handleScroll} className="method-table-scroll-viewport bg-surface rounded-lg border border-main overflow-x-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent" role="region" aria-label="AFK methods table" tabIndex={0}>
+        <table ref={tableRef} className="w-full text-left text-sm whitespace-nowrap [&_th]:px-3 [&_td]:px-3">
           <thead className="bg-app text-muted border-b border-main">
             <tr>
+              <th scope="col" className="sticky left-0 z-10 w-14 min-w-14 bg-app shadow-[1px_0_0_var(--theme-border-main)]">
+                <span className="sr-only">Method icon</span>
+              </th>
               <th className="p-4 font-medium cursor-pointer hover:text-accent" onClick={() => handleSort('method')}>
                 Method {renderSortIcon('method')}
               </th>
@@ -360,20 +418,20 @@ const MethodTable: React.FC<Props> = ({ results, emptyResultsMessage, showAfkCol
                 const iconUrl = getMethodIconUrl(method);
 
                 return (
-                  <tr key={method.id} className="hover:bg-surface-hover/50 transition">
-                    <td className="p-4 whitespace-normal">
-                      <div className="flex items-center gap-3">
-                        {iconUrl && (
-                          <img 
-                            src={iconUrl}
-                            alt=""
-                            className="w-8 h-8 shrink-0 object-contain"
-                          />
-                        )}
-                        <div className="w-48 min-w-0 [overflow-wrap:anywhere]">
-                          <div className="font-medium text-main">{method.name}</div>
-                          <div className="text-xs text-muted mt-0.5">{method.requirements.join(', ')}</div>
-                        </div>
+                  <tr key={method.id} className="group hover:bg-surface-hover transition-colors">
+                    <td title={method.name} className="sticky left-0 z-10 w-14 min-w-14 bg-surface p-4 shadow-[1px_0_0_var(--theme-border-main)] group-hover:bg-surface-hover transition-colors">
+                      {iconUrl && (
+                        <img
+                          src={iconUrl}
+                          alt=""
+                          className="w-8 h-8 shrink-0 object-contain"
+                        />
+                      )}
+                    </td>
+                    <td data-column="method" className="p-4 whitespace-normal">
+                      <div className="w-48 min-w-0 [overflow-wrap:anywhere]">
+                        <div className="font-medium text-main">{method.name}</div>
+                        <div className="text-xs text-muted mt-0.5">{method.requirements.join(', ')}</div>
                       </div>
                     </td>
                     <td className="p-4">
@@ -428,6 +486,17 @@ const MethodTable: React.FC<Props> = ({ results, emptyResultsMessage, showAfkCol
             )}
           </tbody>
         </table>
+      </div>
+      <div
+        ref={bottomScrollbarRef}
+        hidden={!isOverflowing}
+        role="region"
+        aria-label="Scroll methods table horizontally (bottom)"
+        tabIndex={0}
+        onScroll={handleScroll}
+        className="method-table-scrollbar sticky bottom-0 z-20 mx-px h-5 overflow-x-auto overflow-y-hidden border-y border-main bg-surface shadow-lg focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+      >
+        <div className="h-px" style={{ width: scrollSize.content }} />
       </div>
     </div>
   );

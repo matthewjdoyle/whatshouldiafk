@@ -8,7 +8,7 @@
     "tauri": "tauri",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "test": "node --disable-warning=ExperimentalWarning --experimental-strip-types --test tests/marketData.test.mjs tests/economics.test.mjs tests/playerData.test.mjs",
+    "test": "node --disable-warning=ExperimentalWarning --experimental-strip-types --test tests/marketData.test.mjs tests/economics.test.mjs tests/playerData.test.mjs tests/scatterPoints.test.mjs",
     "test:browser": "node --disable-warning=ExperimentalWarning --experimental-strip-types test.mjs",
     "preview": "vite preview",
     "generate-previews": "node scripts/generate-previews.mjs",

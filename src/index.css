@@ -163,3 +163,14 @@ body {
   color: var(--theme-text-main);
 }
 .custom-scrollbar::-webkit-scrollbar { width: 6px; } .custom-scrollbar::-webkit-scrollbar-track { background: transparent; } .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--theme-border-main); border-radius: 3px; } .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--theme-text-muted); }
+
+/* The synchronized scrollbar stays at the viewport bottom while the table extends below it. */
+.method-table-scroll-viewport { scrollbar-width: none; }
+.method-table-scroll-viewport::-webkit-scrollbar { display: none; }
+.method-table-scrollbar {
+  scrollbar-color: var(--theme-text-muted) var(--theme-bg-surface-hover);
+}
+.method-table-scrollbar::-webkit-scrollbar { height: 12px; }
+.method-table-scrollbar::-webkit-scrollbar-track { background: var(--theme-bg-surface-hover); }
+.method-table-scrollbar::-webkit-scrollbar-thumb { background: var(--theme-text-muted); border-radius: 6px; }
+.method-table-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--theme-text-sub); }

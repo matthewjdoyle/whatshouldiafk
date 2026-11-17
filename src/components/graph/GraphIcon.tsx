@@ -16,15 +16,15 @@ export default function GraphIcon({ method, profitStatus, size }: {
     <span
       aria-hidden="true"
       style={size === undefined ? undefined : { width: size, height: size }}
-      className={`grid size-7 shrink-0 place-items-center ${profitStatus === undefined ? '' : `rounded-full ${border}`}`}
+      className={`flex size-7 shrink-0 items-center justify-center ${profitStatus === undefined ? '' : `rounded-full ${border}`}`}
     >
       {url && !failed ? (
         <img
           src={url}
           alt=""
           onError={() => setFailed(true)}
-          style={size === undefined ? undefined : { width: size - 4, height: size - 4 }}
-          className="size-6 object-contain"
+          style={size === undefined ? undefined : { width: Math.max(0, size - (profitStatus === undefined ? 0 : 4)), height: Math.max(0, size - (profitStatus === undefined ? 0 : 4)) }}
+          className="block size-6 object-contain object-center"
         />
       ) : (
         <span className="size-2 rounded-full bg-accent" />

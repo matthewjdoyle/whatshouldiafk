@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import puppeteer from 'puppeteer';
 import methods from './src/data/methods.json' with { type: 'json' };
 import { meetsSkillRequirements, skillNames } from './src/player/profile.ts';
+import { createScale } from './src/components/graph/graphData.ts';
 
 const origin = 'http://afk.test';
 const dist = new URL('./dist/', import.meta.url);
@@ -34,7 +35,7 @@ const respondJson = (request, data, status = 200) => request.respond({
   body: JSON.stringify(data),
 });
 
-const browser = await puppeteer.launch({ headless: 'shell', pipe: true, args: ['--no-sandbox'] });
+const browser = await puppeteer.launch({ headless: 'shell', pipe: true, ignoreDefaultArgs: ['--hide-scrollbars'], args: ['--no-sandbox'] });
 try {
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 900 });
@@ -80,6 +81,9 @@ try {
             return respondJson(request, { data: allPrices });
         }
       }
+      if (request.resourceType() === 'image') {
+        return request.respond({ status: 200, contentType: 'image/png', body: await readFile(new URL('./osrs/skills/fishing.png', dist)) });
+      }
       if (url.origin === 'https://api.wiseoldman.net') {
         const username = decodeURIComponent(url.pathname.split('/').pop());
         playerRequests.push({ username, method: request.method() });
@@ -96,7 +100,7 @@ try {
     document.querySelector(selector)?.textContent.includes(text), {}, selector, text);
   const status = () => page.$eval('#market-status', node => node.textContent);
   const row = () => page.$eval('#methods-panel table', (table, name) => {
-    const row = [...table.tBodies[0].rows].find(row => row.cells[0]?.innerText.includes(name));
+    const row = [...table.tBodies[0].rows].find(row => row.querySelector('[data-column="method"]')?.innerText.includes(name));
     return row && Object.fromEntries([...table.tHead.rows[0].cells].map((heading, index) =>
       [heading.textContent.trim(), row.cells[index].innerText],
     ));
@@ -109,19 +113,322 @@ try {
   assert.match(await status(), /Loading GE prices/);
   await waitForText('#methods-panel [role="status"]', 'GE buy limits unavailable');
 
+  // Horizontal scrolling stays within the table, with a narrow pinned icon column.
+  const tableViewport = '[aria-label="AFK methods table"]';
+  const bottomScrollbar = '[aria-label="Scroll methods table horizontally (bottom)"]';
+  assert.equal(await page.$('[aria-label="Scroll methods table horizontally (top)"]'), null, 'No scrollbar above the table');
+  assert.equal(await page.$$eval('.method-table-scrollbar', nodes => nodes.length), 1, 'Only the bottom scrollbar is rendered');
+  const waitForTableLayout = () => page.waitForFunction(() => {
+    const viewport = document.querySelector('[aria-label="AFK methods table"]');
+    return [...document.querySelectorAll('.method-table-scrollbar')].every(rail =>
+      viewport.scrollWidth > viewport.clientWidth
+        ? !rail.hidden && rail.scrollWidth === viewport.scrollWidth && rail.clientWidth === viewport.clientWidth
+        : rail.hidden);
+  });
+  const waitForTableSync = async expected => {
+    try {
+      await page.waitForFunction(expected => {
+        const viewport = document.querySelector('[aria-label="AFK methods table"]');
+        return (expected === undefined || viewport.scrollLeft === expected)
+          && [...document.querySelectorAll('.method-table-scrollbar')].every(rail => rail.hidden || rail.scrollLeft === viewport.scrollLeft);
+      }, { timeout: 5000 }, expected);
+    } catch (error) {
+      const positions = await page.$$eval('[aria-label="AFK methods table"], .method-table-scrollbar', nodes => nodes.map(node => ({
+        label: node.getAttribute('aria-label'), position: node.scrollLeft, content: node.scrollWidth, viewport: node.clientWidth,
+      })));
+      error.message += ` Expected ${expected}; ${JSON.stringify(positions)}`;
+      throw error;
+    }
+  };
+  for (const width of [320, 375, 768]) {
+    await page.setViewport({ width, height: 900 });
+    await waitForTableLayout();
+    assert.equal(await page.$eval('html', node => node.scrollWidth <= innerWidth), true, `No page overflow at ${width}px`);
+    assert.equal(await page.$eval(bottomScrollbar, node => node.hidden), false);
+    await page.$eval(tableViewport, node => { node.scrollLeft = 0; });
+    await waitForTableSync(0);
+    const initial = await page.$eval('#methods-panel tbody tr', row => ({
+      icon: row.cells[0].getBoundingClientRect().left,
+      name: row.querySelector('[data-column="method"]').getBoundingClientRect().left,
+    }));
+    for (const [selector, fraction] of [[bottomScrollbar, 0.5], [tableViewport, 0.75], [bottomScrollbar, 1], [tableViewport, 0], [bottomScrollbar, 1], [tableViewport, 0]]) {
+      const expectedScroll = await page.$eval(selector, (node, fraction) => {
+        node.scrollLeft = Math.round((node.scrollWidth - node.clientWidth) * fraction);
+        return node.scrollLeft;
+      }, fraction);
+      await waitForTableSync(expectedScroll);
+      const geometry = await page.$eval(tableViewport, viewport => {
+        const row = viewport.querySelector('tbody tr');
+        return {
+          scroll: viewport.scrollLeft,
+          icon: row.cells[0].getBoundingClientRect().left,
+          name: row.querySelector('[data-column="method"]').getBoundingClientRect().left,
+          lastRight: row.lastElementChild.getBoundingClientRect().right,
+          viewportRight: viewport.getBoundingClientRect().right - viewport.clientLeft,
+        };
+      });
+      assert.equal(geometry.scroll, expectedScroll, 'The latest scroll input wins');
+      assert.ok(Math.abs(geometry.icon - initial.icon) < 1, `Icon stays pinned at ${width}px`);
+      assert.ok(Math.abs(initial.name - geometry.name - geometry.scroll) < 1, `Names scroll with the data at ${width}px: ${JSON.stringify({ initial, geometry })}`);
+      if (fraction === 1) assert.ok(Math.abs(geometry.lastRight - geometry.viewportRight) < 1, `Final column is reachable at ${width}px: ${JSON.stringify(geometry)}`);
+    }
+  }
+
+  for (const selector of [bottomScrollbar, tableViewport]) {
+    await page.$eval(tableViewport, node => { node.scrollLeft = 0; });
+    await waitForTableSync(0);
+    await page.focus(selector);
+    await page.$eval(selector, node => {
+      node.setAttribute('data-awaiting-scroll-end', '');
+      const finish = () => {
+        if (node.scrollLeft <= 0) return;
+        node.removeAttribute('data-awaiting-scroll-end');
+        node.removeEventListener('scrollend', finish);
+      };
+      node.addEventListener('scrollend', finish);
+    });
+    await page.keyboard.press('ArrowRight');
+    await page.waitForFunction(selector => !document.querySelector(selector).hasAttribute('data-awaiting-scroll-end'), { timeout: 5000 }, selector);
+    await waitForTableSync();
+    assert.ok(await page.$eval(tableViewport, node => node.scrollLeft > 0), `Keyboard scrolling synchronizes ${selector}`);
+  }
+
+  // The lower rail follows the viewport, then settles at the end of the table.
+  await page.setViewport({ width: 375, height: 900 });
+  await waitForTableLayout();
+  await page.$eval(tableViewport, node => window.scrollTo(0, node.getBoundingClientRect().top + scrollY + 400));
+  assert.equal(await page.$eval(bottomScrollbar, node => Math.round(node.getBoundingClientRect().bottom)), 900);
+  for (const theme of ['dark', 'light', 'rsmode']) {
+    await page.select('select[aria-label="Theme"]', theme);
+    await page.$eval(tableViewport, node => {
+      node.scrollLeft = Math.round((node.scrollWidth - node.clientWidth) / 2);
+      window.scrollTo(0, node.getBoundingClientRect().top + scrollY + 400);
+    });
+    await waitForTableSync();
+    await page.waitForFunction(() => {
+      const viewport = document.querySelector('[aria-label="AFK methods table"]');
+      return getComputedStyle(viewport.querySelector('tbody td')).backgroundColor === getComputedStyle(viewport).backgroundColor;
+    });
+    assert.equal(await page.$eval(tableViewport, node => getComputedStyle(node.querySelector('tbody td')).backgroundColor === getComputedStyle(node).backgroundColor), true, `Pinned icons have an opaque ${theme} background`);
+    await page.hover('#methods-panel tbody tr > td:first-child');
+    await page.waitForFunction(() => {
+      const row = document.querySelector('#methods-panel tbody tr');
+      return getComputedStyle(row.cells[0]).backgroundColor === getComputedStyle(row).backgroundColor;
+    });
+    await page.mouse.move(0, 0);
+    await page.$eval(tableViewport, node => window.scrollTo(0, node.getBoundingClientRect().top + scrollY + 400));
+    await page.screenshot({ path: `node_modules/.tmp/method-table-scroll-${theme}.png` });
+  }
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  assert.equal(await page.$eval(bottomScrollbar, node => {
+    const bar = node.getBoundingClientRect();
+    return bar.bottom < innerHeight && Math.abs(bar.bottom - node.parentElement.getBoundingClientRect().bottom) < 1;
+  }), true, 'Lower rail settles at the table bottom');
+  await page.evaluate(() => {
+    const spacer = document.createElement('div');
+    spacer.id = 'table-scroll-test-spacer';
+    spacer.style.height = '100vh';
+    document.getElementById('root').append(spacer);
+    window.scrollTo(0, document.documentElement.scrollHeight);
+  });
+  assert.equal(await page.$eval(bottomScrollbar, node => node.getBoundingClientRect().bottom < 0), true, 'Lower rail leaves with the table');
+  await page.evaluate(() => { document.getElementById('table-scroll-test-spacer').remove(); window.scrollTo(0, 0); });
+
+  // Column changes and viewport growth clamp the table and update rail visibility.
+  await page.setViewport({ width: 768, height: 900 });
+  await waitForTableLayout();
+  await page.$eval(tableViewport, node => { node.scrollLeft = node.scrollWidth; });
+  await waitForTableSync();
+  for (const label of ['Economics', 'GE Limit', 'GP/XP', 'AFK Time']) {
+    await page.click(`::-p-aria(${label})`);
+    await waitForTableLayout();
+    await waitForTableSync();
+  }
+  assert.equal(await page.$eval(bottomScrollbar, node => node.hidden), true, 'Scrollbar hides when columns fit');
+  for (const label of ['Economics', 'GE Limit', 'GP/XP', 'AFK Time']) await page.click(`::-p-aria(${label})`);
+  await waitForTableLayout();
+  assert.equal(await page.$eval(bottomScrollbar, node => node.hidden), false, 'Rails return with overflowing columns');
+  await page.$eval(tableViewport, node => { node.scrollLeft = node.scrollWidth; });
+  await waitForTableSync();
+  await page.setViewport({ width: 1280, height: 900 });
+  await waitForTableLayout();
+  assert.equal(await page.$eval(tableViewport, node => node.scrollLeft), 0, 'Growing the viewport resets a clamped scroll');
+  assert.equal(await page.$eval(bottomScrollbar, node => node.hidden), true);
+  await page.select('select[aria-label="Theme"]', 'dark');
+
   await page.click('#graph-tab');
-  const marker = '#graph-panel [aria-haspopup="dialog"]';
+  assert.equal(await page.$('.method-table-scrollbar'), null, 'Table scrollbars unmount with Methods');
+  const marker = '#graph-panel button[data-method-id]';
+  const popout = '#scatter-method-popout';
   await page.waitForSelector(marker, { visible: true });
-  await page.focus(marker);
-  await page.keyboard.press('Enter');
-  await page.waitForFunction(() => document.querySelector('dialog')?.open);
-  await page.waitForFunction(() => document.activeElement?.id === 'graph-detail-title');
+  assert.equal(await page.$$eval(marker, nodes => nodes.length), methods.length, 'Every method has its own scatter point');
+  assert.equal(await page.$$eval(marker, nodes => nodes.some(node => /overlapping methods/.test(node.getAttribute('aria-label')))), false);
+  const idleIconCount = await page.$$eval(`${marker} [data-idle-icon] img`, nodes => nodes.length);
+  assert.ok(idleIconCount > 0 && idleIconCount < methods.length, 'Isolated points show small icons while dense points remain dots');
+
+  const coincident = Map.groupBy(methods, method => JSON.stringify([method.xp.perHour, method.afk.typicalSeconds]));
+  const xScale = createScale(methods.map(method => method.xp.perHour), 'xp', 5, { logarithmic: false });
+  const yScale = createScale(methods.map(method => method.afk.typicalSeconds), 'afk', 5, { logarithmic: false });
+
+  // Dot coordinates are the exact axis projections, not displaced collision targets.
+  // Every distinct spot remains hoverable even in a dense area, with no icon hit interception.
+  for (const width of [1280, 375, 320]) {
+    await page.setViewport({ width, height: 900 });
+    await page.waitForFunction(width => {
+      const plot = document.querySelector('#graph-panel [aria-label^="Scatter plot"]');
+      return plot && Number(plot.querySelector('svg').getAttribute('width')) === plot.clientWidth
+        && (width < 480 ? plot.querySelector('button').clientWidth === 44 : plot.querySelector('button').clientWidth === 28);
+    }, {}, width);
+    await page.mouse.move(0, 0);
+    const geometry = await page.$eval('#graph-panel [aria-label^="Scatter plot"]', plot => ({
+      axis: plot.querySelector('path').getAttribute('d').match(/M ([\d.]+) ([\d.]+) V ([\d.]+) H ([\d.]+)/).slice(1).map(Number),
+      dots: [...plot.querySelectorAll('button[data-method-id]')].map(node => ({ id: node.dataset.methodId, left: parseFloat(node.style.left), top: parseFloat(node.style.top) })),
+    }));
+    const expectedIcons = geometry.dots.filter(point => geometry.dots.every(other =>
+      other.id === point.id || Math.abs(other.left - point.left) >= 34 || Math.abs(other.top - point.top) >= 34,
+    )).map(point => point.id).sort();
+    const idleIcons = await page.$$eval(`${marker} [data-idle-icon]`, nodes => nodes.map(node => {
+      const button = node.closest('button');
+      const center = button.getBoundingClientRect();
+      const icon = node.firstElementChild.getBoundingClientRect();
+      return {
+        id: button.dataset.methodId, width: icon.width, height: icon.height,
+        dx: icon.x + icon.width / 2 - (center.x + center.width / 2),
+        dy: icon.y + icon.height / 2 - (center.y + center.height / 2),
+        border: getComputedStyle(node.firstElementChild).borderWidth,
+      };
+    }));
+    assert.ok(idleIcons.length > 0, `Isolated icons remain available at ${width}px`);
+    assert.deepEqual(idleIcons.map(icon => icon.id).sort(), expectedIcons, `Icon eligibility follows the available space at ${width}px`);
+    for (const { id, ...icon } of idleIcons) {
+      assert.deepEqual(icon, { width: 28, height: 28, dx: 0, dy: 0, border: '0px' }, `${id} has a centered, borderless small icon`);
+    }
+    const idleMarker = `${marker}[data-method-id="${idleIcons[0].id}"]`;
+    await page.hover(idleMarker);
+    await page.waitForFunction(selector => getComputedStyle(document.querySelector(`${selector} [data-idle-icon]`)).visibility === 'hidden', {}, idleMarker);
+    await page.waitForSelector('[data-scatter-preview] img');
+    await page.mouse.move(0, 0);
+    await page.waitForFunction(selector => getComputedStyle(document.querySelector(`${selector} [data-idle-icon]`)).visibility === 'visible', {}, idleMarker);
+    const [left, top, bottom, right] = geometry.axis;
+    for (const dot of geometry.dots) {
+      const method = methods.find(method => method.id === dot.id);
+      assert.ok(Math.abs(dot.left - (left + (right - left) * xScale.position(method.xp.perHour))) < 0.01, `${dot.id} retains its exact X coordinate at ${width}px (CSSOM subpixel precision)`);
+      assert.ok(Math.abs(dot.top - (bottom - (bottom - top) * yScale.position(method.afk.typicalSeconds))) < 0.01, `${dot.id} retains its exact Y coordinate at ${width}px (CSSOM subpixel precision)`);
+    }
+    for (const members of coincident.values()) {
+      await page.hover(`${marker}[data-method-id="${members[0].id}"]`);
+      await page.waitForFunction(id => !!document.querySelector(`[data-preview-method-id="${id}"]`), {}, members[0].id);
+      const visible = await page.$$eval('[data-preview-method-id]', nodes => nodes.map(node => node.dataset.previewMethodId).sort());
+      assert.deepEqual(visible, members.map(method => method.id).sort(), `Only exact overlaps share hover icons at ${width}px`);
+    }
+    const after = await page.$$eval(marker, nodes => nodes.map(node => ({ id: node.dataset.methodId, left: parseFloat(node.style.left), top: parseFloat(node.style.top) })));
+    assert.deepEqual(after, geometry.dots, 'Hover never shifts the points');
+    await page.hover(marker);
+    await page.waitForSelector('[data-scatter-preview] img');
+    const icon = await page.$eval('[data-scatter-preview]', gallery => {
+      const box = gallery.getBoundingClientRect();
+      const image = gallery.querySelector('img').getBoundingClientRect();
+      return { width: image.width, height: image.height, dx: image.x + image.width / 2 - (box.x + box.width / 2), dy: image.y + image.height / 2 - (box.y + box.height / 2), border: getComputedStyle(gallery.querySelector('img').parentElement).borderWidth };
+    });
+    assert.deepEqual(icon, { width: 80, height: 80, dx: 0, dy: 0, border: '0px' }, 'Hover icons are large, centered, and borderless');
+    assert.equal(await page.$eval('html', node => node.scrollWidth <= window.innerWidth), true);
+  }
+  await page.setViewport({ width: 1280, height: 900 });
+  await page.mouse.move(0, 0);
+
+  // Clicking an exact overlap cycles through every method and wraps without stealing focus.
+  const overlap = [...coincident.values()].find(members => members.length > 1).sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
+  const overlapMarker = `${marker}[data-method-id="${overlap[0].id}"]`;
+  await page.hover(overlapMarker);
+  await page.screenshot({ path: 'node_modules/.tmp/scatter-overlap-hover.png' });
+  await page.click(overlapMarker);
+  const nextMethod = `${popout} [aria-label="Next method at this point"]`;
+  for (let index = 0; index < overlap.length; index += 1) {
+    await waitForText(`${popout} h3`, overlap[index].name);
+    await waitForText(`${popout} [role="status"]`, `${index + 1} of ${overlap.length}`);
+    await page.click(nextMethod);
+    assert.equal(await page.$eval(nextMethod, node => document.activeElement === node), true, 'Next retains keyboard focus');
+  }
+  await waitForText(`${popout} h3`, overlap[0].name);
   await page.keyboard.press('Escape');
-  await page.waitForFunction(() => !document.querySelector('dialog') && document.activeElement?.matches('[aria-haspopup="dialog"]'));
+  await page.waitForSelector(popout, { hidden: true });
+  const specificOverlap = `${marker}[data-method-id="${overlap[2].id}"]`;
+  await page.focus(specificOverlap);
+  await page.keyboard.press('Enter');
+  await waitForText(`${popout} h3`, overlap[2].name);
+  await waitForText(`${popout} [role="status"]`, `3 of ${overlap.length}`);
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(id => document.activeElement?.dataset.methodId === id, {}, overlap[2].id);
+
+  await page.focus(marker);
+  const firstId = await page.$eval(marker, node => node.dataset.methodId);
+  const firstMethod = methods.find(method => method.id === firstId);
+  await page.keyboard.press('Enter');
+  await page.waitForSelector(popout, { visible: true });
+  assert.equal(await page.$('dialog'), null, 'Scatter details are not a modal');
+  assert.equal(await page.$eval(popout, node => node.getAttribute('aria-modal')), 'false');
+  await page.waitForFunction(() => document.activeElement?.matches('#scatter-method-popout h3'));
+  await waitForText(`${popout} h3`, firstMethod.name);
+  for (const label of ['XP/hr', 'Net GP/hr', 'Typical AFK time', 'Interactions/hr', 'Net GP/XP', 'Cost/hr', 'Revenue/hr after GE tax', 'Requirements']) {
+    await waitForText(popout, label);
+  }
+  await page.waitForFunction(() => [...document.querySelectorAll('#scatter-method-popout img')].every(img => img.complete && img.naturalWidth > 0));
+
+  // Open details remain anchored and bounded on resize, without blocking the page.
+  await page.setViewport({ width: 320, height: 900 });
+  await page.waitForFunction(() => {
+    const box = document.querySelector('#scatter-method-popout')?.getBoundingClientRect();
+    return box && box.left >= 0 && box.right <= window.innerWidth;
+  });
+  await page.$eval(popout, node => node.scrollIntoView({ block: 'center' }));
+  await page.screenshot({ path: 'node_modules/.tmp/scatter-popout-mobile.png' });
+  await page.setViewport({ width: 1280, height: 900 });
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(id => !document.querySelector('#scatter-method-popout') && document.activeElement?.dataset.methodId === id, {}, firstId);
+
+  // Space opens; moving focus outside and pointer light-dismiss do not steal focus.
+  await page.keyboard.press('Space');
+  await page.waitForSelector(popout);
+  await page.focus('#graph-panel select');
+  await page.waitForSelector(popout, { hidden: true });
+  assert.equal(await page.$eval('#graph-panel select', node => document.activeElement === node), true);
+  const cannonballMarker = `${marker}[data-method-id="cannonballs"]`;
+  await page.click(cannonballMarker);
+  await waitForText(`${popout} h3`, cannonballs);
+  assert.equal(await page.$(`${popout} [aria-label="Next method at this point"]`), null, 'Single methods do not have a Next button');
+  await page.screenshot({ path: 'node_modules/.tmp/scatter-popout-desktop.png' });
+  await page.click('#graph-title');
+  await page.waitForSelector(popout, { hidden: true });
+  await page.click(cannonballMarker);
+  await page.click(`${popout} [aria-label="Close method details"]`);
+  await page.waitForFunction(() => !document.querySelector('#scatter-method-popout') && document.activeElement?.dataset.methodId === 'cannonballs');
+
+  // Filtering out the selection and changing axes clear it instead of reviving stale details.
+  await page.click(cannonballMarker);
+  await page.select('#min-xp', '20000');
+  await page.waitForSelector(popout, { hidden: true });
+  await page.select('#min-xp', '0');
+  await page.click(cannonballMarker);
+  await page.select('#graph-panel select:nth-of-type(1)', 'xp');
+  await page.$$eval('#graph-panel select', selects => {
+    selects[1].value = 'xp';
+    selects[1].dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  await page.waitForSelector(popout, { hidden: true });
+  await page.waitForSelector(marker);
+  assert.equal(await page.$$eval(marker, nodes => nodes.length), methods.length);
+  await page.$$eval('#graph-panel select', selects => {
+    selects[1].value = 'afk';
+    selects[1].dispatchEvent(new Event('change', { bubbles: true }));
+  });
 
   releaseFirstPrices();
   await waitForText('#market-status', 'Prices updated');
   const lastUpdated = (await status()).replace('Prices updated ', '');
+  await page.click(cannonballMarker);
+  await waitForText(popout, 'Unavailable');
+  await page.click(`${popout} summary`);
+  await waitForText(popout, 'Steel bar');
   await page.$$eval('#graph-panel select', selects => {
     selects[1].value = 'profit';
     selects[1].dispatchEvent(new Event('change', { bubbles: true }));
@@ -144,6 +451,7 @@ try {
   await page.select('#min-afk', '120');
   await page.click('::-p-aria(Profitable only)');
   await waitForText('#methods-panel tbody', 'No methods with confirmed profit match your filters.');
+  assert.equal(await page.$eval('#methods-panel table', table => table.tBodies[0].rows[0].cells[0].colSpan === table.tHead.rows[0].cells.length), true, 'Empty results span the icon column too');
   await page.select('#min-xp', '20000');
   await waitForText('#methods-panel tbody', 'No methods match your filters.');
   await page.click('::-p-aria(Profitable only)');
@@ -234,7 +542,7 @@ try {
   assert.ok(await page.$('#player-levels-popout'));
   await page.mouse.move(0, 0);
   await page.waitForSelector('#player-levels-popout', { hidden: true });
-  const tableNames = () => page.$$eval('#methods-panel tbody tr', rows => rows.map(row => row.cells[0]?.innerText ?? ''));
+  const tableNames = () => page.$$eval('#methods-panel tbody tr', rows => rows.map(row => row.querySelector('[data-column="method"]')?.innerText ?? ''));
   await page.click('#player-skill-filter');
   assert.equal(await page.$eval('#player-skill-filter', node => node.closest('section').getAttribute('aria-label')), 'Method filters');
   const expected = methods.filter(method => meetsSkillRequirements(method, playerLevels));
@@ -361,7 +669,7 @@ try {
   assert.equal(await page.$eval('#player-rsn', node => node.value), '');
   assert.equal(playerRequests.length, 5);
   assert.deepEqual(errors, []);
-  console.log('Browser smoke passed for GE, charts, FAQ, header lookup/reload, OSRS skill layout and icons, hover/focus/Escape, eligibility, saved levels, errors, cooldown, clearing, and responsive themes.');
+  console.log('Browser smoke passed for synchronized table scrollbars, viewport-sticky scrolling, pinned method icons, responsive columns and themes, GE, exact scatter coordinates, space-aware idle icons, nearest-point picking, large centered borderless hover icons, coincident icon galleries and Next cycling, non-modal popouts and dismissal, responsive scatter layout, bars, FAQ, header lookup/reload, OSRS skill layout and icons, hover/focus/Escape, eligibility, saved levels, errors, cooldown, clearing, and responsive themes.');
 } finally {
   await browser.close();
 }

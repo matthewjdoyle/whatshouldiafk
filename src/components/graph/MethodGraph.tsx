@@ -177,7 +177,7 @@ export default function MethodGraph({ results, priceLoading, emptyResultsMessage
         ) : points.length === 0 ? (
           <p role="status" className="p-10 text-center text-sm text-sub">No methods can be plotted with these axis settings. Expand the omitted methods below for details.</p>
         ) : scatter ? (
-          <ScatterPlot points={points} xMetric={xMetric} yMetric={yMetric} logX={logX} logY={logY} onOpen={openDetails} />
+          <ScatterPlot key={`${xMetric}-${yMetric}-${logX}-${logY}`} points={points} xMetric={xMetric} yMetric={yMetric} logX={logX} logY={logY} />
         ) : (
           <RankedBars
             key={settings.barOrientation}
@@ -193,15 +193,16 @@ export default function MethodGraph({ results, priceLoading, emptyResultsMessage
         <p aria-live="polite" className="tabular-nums">
           {!waitingForPrices && <>{points.length} {points.length === 1 ? 'method' : 'methods'} plotted</>}
         </p>
-        {!waitingForPrices && points.length > 0 && <p>Select {scatter ? 'a marker' : 'a bar'} for method details.</p>}
+        {!waitingForPrices && points.length > 0 && <p>{scatter ? 'Hover for icons; select a point for method details.' : 'Select a bar for method details.'}</p>}
+        {scatter && !waitingForPrices && points.length > 0 && <p className="w-full">Points stay at their exact values. Use Next in the popout to browse methods at the same point.</p>}
         {!waitingForPrices && points.length > 0 && (
           <div className="flex w-full flex-wrap gap-x-4 gap-y-1">
             <span className="inline-flex items-center gap-1.5">
-              <span aria-hidden="true" className={scatter ? 'size-3 rounded-full border-2 border-profit' : 'h-2 w-3 rounded-xs bg-profit'} />
+              <span aria-hidden="true" className={scatter ? 'size-2.5 rounded-full bg-profit' : 'h-2 w-3 rounded-xs bg-profit'} />
               Profitable
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span aria-hidden="true" className={scatter ? 'size-3 rounded-full border-2 border-loss' : 'h-2 w-3 rounded-xs bg-loss'} />
+              <span aria-hidden="true" className={scatter ? 'size-2.5 rounded-full bg-loss' : 'h-2 w-3 rounded-xs bg-loss'} />
               {scatter ? 'Loss-making' : 'Not profitable'}
             </span>
             {!scatter && points.some(({ result, profitStatus }) => profitStatus === null && result.profitPerHour !== 0) && (
