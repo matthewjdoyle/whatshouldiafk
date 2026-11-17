@@ -1,3 +1,5 @@
+import type { SkillName } from '../player/profile.ts';
+
 export interface ItemRate {
   id: number;
   name: string;
@@ -22,6 +24,7 @@ export interface Method {
   inputs: ItemRate[];
   outputs: ItemRate[];
   requirements: string[];
+  additionalSkillRequirements?: Partial<Record<SkillName, number>>;
 }
 
 export interface ItemPrice {

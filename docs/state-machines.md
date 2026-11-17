@@ -1,6 +1,6 @@
 # App state machines
 
-The GE controller owns asynchronous request state. The calculation layer owns what can be known from the current prices. Other interactions keep their state in the components that handle their events.
+The GE and player controllers own their independent asynchronous request states. The calculation layer owns what can be known from the current prices. Other interactions keep their state in the components that handle their events.
 
 ## Grand Exchange requests
 
@@ -14,6 +14,31 @@ The GE controller owns asynchronous request state. The calculation layer owns wh
 | Both | App cleanup | Stop the timer, abort web requests, and ignore late results from the stopped session |
 
 Only a successful price request replaces the snapshot and its timestamp. Refreshing and stale states retain both. [The transport](../src/market/marketTransport.ts) validates responses and gives each attempt 15 seconds. The [desktop commands](../src-tauri/src/lib.rs) use the existing Tauri bridge. Rejection, timeout, or unusable native data allows a web fallback. Partial data with usable quotes is valid. A missing or unusable item quote remains unknown.
+
+## Player levels and eligibility
+
+[The player hook](../src/hooks/usePlayerData.ts) restores validated `afk-player-v1` storage and starts/stops [the controller](../src/player/playerData.ts). Startup never requests levels. The saved record contains one profile (normalized username, display name, known skill levels, snapshot time, local fetch time) and the eligibility checkbox. Invalid records use defaults, and storage errors leave in-memory use available. [The header lookup](../src/components/PlayerLookup.tsx) owns the draft RSN separately from the active profile and remains mounted across tab changes. The “RSN level filter” checkbox lives beside “Profitable only” in the shared method filters.
+
+| Event | Transition and invariants |
+|---|---|
+| Restore or fresh visit | `ready` with saved profile/filter, or `idle` without a profile and with the filter off. No request is made. Saved levels are labeled with the original snapshot time. |
+| Inline reload icon or Enter in the header field | A nonempty name is validated and normalized. Invalid names report guidance without requesting. A valid request enters `loading`; the previous profile/filter remain active and labeled in the popout. The same action loads a new player or refreshes the entered player. |
+| Duplicate or replacement request | The same pending username is ignored. A different accepted username aborts the earlier request; only the current request can publish results. |
+| Successful POST | `loading` → `ready`; replace and persist the profile, retaining the checkbox. Record a 60-second same-player update cooldown. |
+| HTTP 429 | Attempt one GET of the existing profile. Success enters `ready` with the original snapshot timestamp and a refresh-limit warning; failure enters `error`. Respect `Retry-After` (60 seconds by default) across player requests. No automatic retries. |
+| Timeout, missing player, refused tracking, malformed response, network/service failure | `loading` → `error`; retain the previous profile, filter, and storage. Without a previous profile, eligibility remains disabled. |
+| Cooldown submission | Keep the current request/profile state and report how many seconds remain. No request or retry timer is started. |
+| Toggle eligibility | A profile is required. Persist profile and checkbox together. |
+| Submit an empty name | Abort pending work, enter `idle`, clear profile/draft/filter, and remove the saved record. Keep session cooldowns so clearing does not bypass them. No separate clear control is shown. |
+| Hover or focus within the header lookup | Reveal the single submit icon. With a profile, pending request, or message, open a popout below the field. Moving from the field into the popout keeps it open. Touch uses focus and always shows the icon. |
+| Leave and blur, or Escape | Close the popout when neither hovered nor focused. Escape dismisses it without moving focus; a new pointer entry, focus event, edit, or submission allows it to open again. No timers or additional requests are involved. |
+| Hook cleanup | Abort the request and ignore late successes/failures, including after restarting in React Strict Mode. |
+
+[The transport](../src/player/playerTransport.ts) uses the browser-accessible Wise Old Man API without credentials, keys, or a server proxy. Every POST/GET attempt has a 15-second deadline, including response-body reading. Only an explicit lookup creates/updates a public tracking profile. The Info tab explains this and links to the provider. Valid unranked levels remain usable; invalid/missing levels remain unknown. [Normalization](../src/player/profile.ts) maps `runecrafting` to `Runecraft`, includes Sailing, and caps individual levels at 99.
+
+The pure eligibility predicate checks the existing primary skill/level plus structured `additionalSkillRequirements`. `Combat 1` has no skill gate. Unknown required levels do not exclude a method; only a known primary or secondary level below its requirement excludes it. Quests, diaries, membership, equipment, recommended setups, and indirect quest skill prerequisites are not checked or inferred. App applies eligibility before calculations and profitability and shares the results with Methods and Graph. The Info tab explains these limits and that entry levels do not guarantee listed rates.
+
+The popout uses the traditional three-column, eight-row OSRS skill order, local skill icons, and the RuneScape font. Hiscores contain base levels only, so both values in each skill tile show the same loaded level. Unknown levels show `?`; total level is shown only when every skill level is known. Snapshot time, saved state, and any lookup failure or refresh warning appear inside the popout. A separate visually hidden status announces lookup results even while the popout is closed.
 
 ## Derived results
 

@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useMarketData } from './hooks/useMarketData';
+import { usePlayerData } from './hooks/usePlayerData';
+import { meetsSkillRequirements } from './player/profile';
+import PlayerLookup from './components/PlayerLookup';
 import type { Method } from './calculations/profit';
 import { calculateMethod, hasConfirmedProfit } from './calculations/profit';
 import methodsData from './data/methods.json';
@@ -19,6 +22,7 @@ const allSkills = Array.from(new Set(methods.map(m => m.skill))).sort();
 
 function App() {
   const { prices, mapping, refresh } = useMarketData();
+  const player = usePlayerData();
   
   // Theme
   const [theme, setTheme] = useLocalStorage<'dark' | 'light' | 'rsmode'>('afk-theme', 'rsmode');
@@ -45,6 +49,7 @@ function App() {
   const latestPrices = 'data' in prices ? prices.data : {};
   const itemMapping = mapping.status === 'ready' ? mapping.data : {};
   const candidates = methods.filter(method => {
+    if (player.enabled && player.profile && !meetsSkillRequirements(method, player.profile.levels)) return false;
     if (method.afk.typicalSeconds < minAfk) return false;
     if (method.xp.perHour < minXp) return false;
     if (selectedSkills.length > 0 && !selectedSkills.includes(method.skill)) return false;
@@ -95,6 +100,7 @@ function App() {
             <p className="text-muted text-sm mt-1">Compare OSRS AFK training methods using real-time GE profit margins.</p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 md:shrink-0">
+            <PlayerLookup player={player} />
             <div className="relative flex items-center">
               <select
                 aria-label="Theme"
@@ -109,7 +115,7 @@ function App() {
               <ChevronDown className="w-4 h-4 text-muted absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
             <div className="flex items-center gap-2">
-              <span role="status" className="text-xs text-muted sm:text-sm">
+              <span id="market-status" role="status" className="text-xs text-muted sm:text-sm">
                 {priceStatus}
               </span>
               <button
@@ -242,7 +248,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="flex flex-col">
+              <div className="col-span-2 sm:col-auto flex flex-col">
                 <label htmlFor="min-xp" className="text-xs text-muted mb-1">Minimum XP/hr</label>
                 <div className="relative flex items-center">
                   <select 
@@ -260,7 +266,8 @@ function App() {
                 </div>
               </div>
 
-              <label className="flex items-center space-x-2 text-sm py-2 sm:py-0 sm:mt-4 cursor-pointer text-main">
+              <div className="col-span-2 flex flex-wrap items-center gap-x-4 gap-y-2 sm:mt-4">
+              <label className="flex items-center space-x-2 text-sm py-2 sm:py-0 cursor-pointer text-main">
                 <input 
                   type="checkbox" 
                   checked={profitableOnly}
@@ -269,6 +276,15 @@ function App() {
                 />
                 <span>Profitable only</span>
               </label>
+
+              <label className={`flex items-center space-x-2 text-sm py-2 sm:py-0 text-main ${player.profile ? 'cursor-pointer' : 'opacity-60'}`}
+                title={player.profile ? `Filter by ${player.profile.displayName}'s skill levels. Quests and other unlocks are not checked.` : 'Load an RSN in the header to filter by skill levels.'}>
+                <input id="player-skill-filter" type="checkbox" checked={player.enabled} disabled={!player.profile}
+                  onChange={event => player.setEnabled(event.target.checked)}
+                  className="rounded bg-input border-main text-accent focus:ring-accent cursor-pointer" />
+                <span>RSN level filter</span>
+              </label>
+              </div>
 
               {activeTab === 'methods' && <div className="col-span-2 flex flex-col sm:border-l border-main sm:pl-6 sm:ml-auto">
                 <label className="text-xs text-muted mb-1">Columns</label>
@@ -342,6 +358,22 @@ function App() {
 
         <div id="info-panel" role="tabpanel" aria-labelledby="info-tab" hidden={activeTab !== 'info'} className="bg-surface p-8 rounded-lg text-sub space-y-6">
             <h2 className="text-2xl font-bold text-main mb-4">How does what should I AFK know what I should AFK?</h2>
+
+            <div id="player-levels-info" className="space-y-2">
+              <h3 className="text-lg font-semibold text-accent">How does the RSN level filter work?</h3>
+              <p>
+                Enter your RuneScape name in the header and press Enter or use the refresh icon to load your levels.
+                Hover over or focus the field to see your skill tab. Enable “RSN level filter” to show methods whose
+                primary and secondary skill requirements you meet. Quests, diaries, membership, and equipment still
+                need checking separately, and listed XP and profit rates may assume higher levels or specific setups.
+                Unknown levels do not exclude methods from the filter.
+              </p>
+              <p>
+                Player levels are fetched through <a href="https://wiseoldman.net" target="_blank" rel="noreferrer" className="text-accent hover:underline">Wise Old Man</a>,
+                which records a public hiscores snapshot when you look up or refresh an RSN here.
+                You do not need an account or to visit their site. Hiscores reflect your last OSRS logout or world hop.
+              </p>
+            </div>
             
             <div className="space-y-2">
               <h3 className="text-lg font-semibold text-accent">Why do the prices in this app differ from the official GE website?</h3>

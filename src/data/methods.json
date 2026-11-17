@@ -281,6 +281,7 @@
   },
   {
     "id": "sacred-eels",
+    "additionalSkillRequirements": { "Cooking": 72 },
     "name": "Sacred eels",
     "skill": "Fishing",
     "level": 87,
@@ -636,6 +637,7 @@
   },
   {
     "id": "barbarian-fishing",
+    "additionalSkillRequirements": { "Agility": 45, "Strength": 45 },
     "name": "Barbarian Fishing",
     "iconUrl": "https://static.runelite.net/cache/item/icon/11332.png",
     "skill": "Fishing",
@@ -664,6 +666,7 @@
   },
   {
     "id": "barbarian-fishing-fish-barrel",
+    "additionalSkillRequirements": { "Agility": 45, "Strength": 45 },
     "name": "Barbarian Fishing (Fish Barrel)",
     "iconUrl": "https://static.runelite.net/cache/item/icon/11332.png",
     "skill": "Fishing",
@@ -2429,6 +2432,7 @@
   },
   {
     "id": "ironwood-trees",
+    "additionalSkillRequirements": { "Sailing": 72 },
     "name": "Ironwood trees",
     "skill": "Woodcutting",
     "level": 80,
@@ -2455,6 +2459,7 @@
   },
   {
     "id": "rosewood-trees",
+    "additionalSkillRequirements": { "Sailing": 79 },
     "name": "Rosewood trees",
     "skill": "Woodcutting",
     "level": 92,
@@ -2481,6 +2486,7 @@
   },
   {
     "id": "seeking-dragon-arrows-engorged",
+    "additionalSkillRequirements": { "Fletching": 90 },
     "name": "Seeking Dragon Arrows (Engorged Tree)",
     "skill": "Woodcutting",
     "level": 77,

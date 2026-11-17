@@ -1,5 +1,65 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "RuneScape";
+  src: url('/osrs/runescape.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* The skill tab keeps its in-game layout with the current app palette. */
+.osrs-skills {
+  padding: 6px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-accent);
+  box-shadow: 0 8px 20px #0008;
+  font-family: "RuneScape", monospace;
+  text-shadow: 1px 1px var(--theme-bg-app);
+}
+
+.osrs-skill {
+  position: relative;
+  height: 36px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--theme-bg-surface-hover), var(--theme-bg-surface));
+}
+
+.osrs-skill-icon {
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  width: 25px;
+  height: 27px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transform: translateY(-50%);
+}
+
+.osrs-skill-level, .osrs-skill-base {
+  position: absolute;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.osrs-skill-level { top: 2px; right: 14px; }
+.osrs-skill-base { bottom: 1px; right: 3px; }
+.osrs-skill-divider {
+  position: absolute;
+  top: 17px;
+  right: 4px;
+  width: 27px;
+  height: 1px;
+  background: var(--theme-border-main);
+  transform: rotate(-42deg);
+}
+
+.osrs-total {
+  margin-top: 3px;
+  background: var(--theme-bg-surface-hover);
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
 
